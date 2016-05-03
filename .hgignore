@@ -1,0 +1,14 @@
+syntax: glob
+
+.DS_Store
+*.pyc
+ENV
+*.swp
+*.swo
+.ropeproject
+tags
+*.hi
+*.o
+*.orig
+.hsenv*
+.cabal-sandbox*
