@@ -1,5 +1,10 @@
 ;;;; link-manager.lisp
 
+;;;; TODO; figure out order to execute
+;;;; for now:
+;;;; - lisp --load package.lisp
+;;;; - (load "link-manager.lisp")
+;;;; - (in-package :link-manager)
 
 ;;; * (mapcar #'(lambda(link) (member 'python (bookmark-tags link))) *db*)
 ;;; * (select #'(lambda(link) (member 'python (bookmark-tags link))))
@@ -58,6 +63,18 @@
                   :if-exists :supersede)
     (with-standard-io-syntax
       (print *db* out))))
+
+; (remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)
+
+(defun select-links-with-tags (tags database)
+  (cond
+    ((equal (length tags) 1)
+     (remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) database))
+    ((> (length tags) 1)
+     (select-links-with-tags (rest tags)
+                             (remove-if-not 
+                               #'(lambda (link) (find (first tags) (bookmark-tags link))) database)))
+    (t database)))
 
 (defun load-db (filename)
   (with-open-file (in filename)
