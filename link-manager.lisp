@@ -65,16 +65,25 @@
       (print *db* out))))
 
 ; (remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)
+(defmacro select-bookmarks-tags (database)
+    `(remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) ,database))
 
 (defun select-links-with-tags (tags database)
   (cond
-    ((equal (length tags) 1)
-     (remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) database))
+    ((equal (length tags) 1) (select-bookmarks-tags database))
     ((> (length tags) 1)
-     (select-links-with-tags (rest tags)
-                             (remove-if-not 
-                               #'(lambda (link) (find (first tags) (bookmark-tags link))) database)))
+     (select-links-with-tags (rest tags) (select-bookmarks-tags database)))
     (t database)))
+
+; (defun select-links-with-tags (tags database)
+;   (cond
+;     ((equal (length tags) 1)
+;      (remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) database))
+;     ((> (length tags) 1)
+;      (select-links-with-tags (rest tags)
+;                              (remove-if-not
+;                                #'(lambda (link) (find (first tags) (bookmark-tags link))) database)))
+;     (t database)))
 
 (defun load-db (filename)
   (with-open-file (in filename)
