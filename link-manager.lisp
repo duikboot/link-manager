@@ -64,15 +64,15 @@
     (with-standard-io-syntax
       (print *db* out))))
 
-; (remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)
-(defmacro select-bookmarks-tags (database)
-    `(remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) ,database))
+(defmacro where-tags-in (database)
+  "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
+  `(remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) ,database))
 
 (defun select-links-with-tags (tags database)
+  "Select all the bookmarks with tags"
   (cond
-    ((equal (length tags) 1) (select-bookmarks-tags database))
-    ((> (length tags) 1)
-     (select-links-with-tags (rest tags) (select-bookmarks-tags database)))
+    ((equal (length tags) 1) (where-tags-in database))
+    ((> (length tags) 1) (select-links-with-tags (rest tags) (where-tags-in database)))
     (t database)))
 
 ; (defun select-links-with-tags (tags database)
@@ -89,8 +89,8 @@
   (with-open-file (in filename)
     (with-standard-io-syntax (setf *db* (read in)))))
 
-(defun select (selector-fn)
-  (remove-if-not selector-fn *db*))
+(defun select (tags selector-fn)
+  (select-links-with-tags tags (remove-if-not selector-fn *db*)))
 
 (defun make-comparison-exp (field value)
   `(equal (slot-value link ,field) ,value))
