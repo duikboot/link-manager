@@ -27,8 +27,12 @@
 
 (defvar *db* nil)
 
-(defstruct bookmark
+; (multiple-value-bind (sec min hour day month year)
+; (get-decoded-time) (format nil "~A ~2,'0d~2,'0d ~A ~A" year month day hour s
+
+(defstruct (bookmark :conc-name)
   "Bookmark structure"
+  id
   title
   link
   (tags '() :type list)
@@ -66,7 +70,7 @@
 
 (defmacro where-tags-in (database)
   "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
-  `(remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) ,database))
+  `(remove-if-not #'(lambda (link) (find (first tags) (tags link))) ,database))
 
 (defun select-links-with-tags (tags database)
   "Select all the bookmarks with tags"
@@ -74,6 +78,9 @@
     ((equal (length tags) 1) (where-tags-in database))
     ((> (length tags) 1) (select-links-with-tags (rest tags) (where-tags-in database)))
     (t database)))
+
+(defun select (selector-fn &optional tags)
+  (select-links-with-tags tags (remove-if-not selector-fn *db*)))
 
 ; (defun select-links-with-tags (tags database)
 ;   (cond
@@ -88,9 +95,6 @@
 (defun load-db (filename)
   (with-open-file (in filename)
     (with-standard-io-syntax (setf *db* (read in)))))
-
-(defun select (tags selector-fn)
-  (select-links-with-tags tags (remove-if-not selector-fn *db*)))
 
 (defun make-comparison-exp (field value)
   `(equal (slot-value link ,field) ,value))
@@ -107,7 +111,7 @@
         (mapcar
           #'(lambda (row)
               (when (funcall selector-fn row)
-                (if title  (setf (getf row :title) title))
-                (if link   (setf (getf row :link) link))
-                (if read-p (setf (getf row :read?) read?)))
+                (if title  (setf (title row) title))
+                (if link   (setf (link row) link))
+                (if read-p (setf (read? row) read?)))
               row) *db*)))
