@@ -106,12 +106,13 @@
 (defmacro where (&rest clauses)
   `#'(lambda (link) (and ,@(make-comparison-list clauses))))
 
-(defun update (selector-fn &key title link (read? nil read-p))
+(defun update (selector-fn &key title link tags (read? nil read-p))
   (setf *db*
         (mapcar
           #'(lambda (row)
               (when (funcall selector-fn row)
                 (if title  (setf (title row) title))
                 (if link   (setf (link row) link))
+                (if tags   (setf (tags row) tags))
                 (if read-p (setf (read? row) read?)))
               row) *db*)))
