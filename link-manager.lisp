@@ -28,13 +28,24 @@
 
 
 (defvar *db* nil)
+(defparameter *counter* "counter")
+
+; set default counter to a function, then call in on creation of id
+(defvar *highest-id* 0)
+
+(defun next-value (filename)
+  (with-open-file (in filename)
+    (with-standard-io-syntax (setf *highest-id* (read in))))
+  #'(lambda () (incf *highest-id*)))
+
+(defvar get-id (next-value *counter*))
 
 ; (multiple-value-bind (sec min hour day month year)
 ; (get-decoded-time) (format nil "~A ~2,'0d~2,'0d ~A ~A" year month day hour s
 
 (defstruct (bookmark :conc-name)
   "Bookmark structure"
-  id
+  (id (funcall get-id) :read-only t)  ; set default function next-value then call it on creation
   title
   link
   (tags '() :type list)
@@ -57,6 +68,14 @@
                   :if-exists :supersede)
     (with-standard-io-syntax
       (print *db* out))))
+
+(defun save-counter (filename)
+  "Save current *counter* to file."
+  (with-open-file (out filename
+                  :direction :output
+                  :if-exists :supersede)
+    (with-standard-io-syntax
+      (print *highest-id* out))))
 
 (defun load-db (filename)
   (with-open-file (in filename)
