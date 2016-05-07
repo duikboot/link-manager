@@ -21,6 +21,8 @@
 ; (remove-if-not #'(lambda (link) (member 'python (bookmark-tags link)))
 ;                (remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags
 ;                                                                link))) *db*))
+;; Sorting:
+;; (sort *db* '< :key 'date-added)
 
 (in-package :link-manager)
 
@@ -36,7 +38,7 @@
   title
   link
   (tags '() :type list)
-  (date-added (get-decoded-time) :read-only t)
+  (date-added (get-universal-time) :read-only t)
   (read? nil))
 
 (defun add-record (link)
