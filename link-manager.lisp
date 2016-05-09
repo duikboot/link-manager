@@ -6,21 +6,6 @@
 ;;;; - (load "link-manager.lisp")
 ;;;; - (in-package :link-manager)
 
-;;; * (mapcar #'(lambda(link) (member 'python (bookmark-tags link))) *db*)
-;;; * (select #'(lambda(link) (member 'python (bookmark-tags link))))
-
-; (select (and #'(lambda(link) (find 'lisp (bookmark-tags link)))
-;              #'(lambda(link) (find 'python (bookmark-tags link)))))
-
-; (or #'(lambda(link) (member 'lisp (bookmark-tags link)))
-;     #'(lambda(link) (member 'python (bookmark-tags link))))
-
-
-; (remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)
-
-; (remove-if-not #'(lambda (link) (member 'python (bookmark-tags link)))
-;                (remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags
-;                                                                link))) *db*))
 ;; Sorting:
 ;; (sort *db* '< :key 'date-added)
 
@@ -103,16 +88,6 @@
 (defun select (selector-fn &optional tags)
   (select-links-with-tags tags (remove-if-not selector-fn *db*)))
 
-; (defun select-links-with-tags (tags database)
-;   (cond
-;     ((equal (length tags) 1)
-;      (remove-if-not #'(lambda (link) (find (first tags) (bookmark-tags link))) database))
-;     ((> (length tags) 1)
-;      (select-links-with-tags (rest tags)
-;                              (remove-if-not
-;                                #'(lambda (link) (find (first tags) (bookmark-tags link))) database)))
-;     (t database)))
-
 (defun flatten (l)
   "Flatten list."
   (cond ((null l) nil)
@@ -147,3 +122,7 @@
                 (if tags   (setf (tags row) tags))
                 (if read-p (setf (read? row) read?)))
               row) *db*)))
+
+(defun save ()
+  (save-db "test.db")
+  (save-counter "counter"))
