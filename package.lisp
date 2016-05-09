@@ -5,6 +5,7 @@
   (:export :make-link
            :save-db
            :load-db
+           :save
            :select
            :where))
 

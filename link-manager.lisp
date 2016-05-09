@@ -82,7 +82,8 @@
   "Select all the bookmarks with tags"
   (cond
     ((equal (length tags) 1) (where-tags-in database))
-    ((> (length tags) 1) (select-links-with-tags (rest tags) (where-tags-in database)))
+    ((> (length tags) 1)
+     (select-links-with-tags (rest tags) (where-tags-in database)))
     (t database)))
 
 (defun select (selector-fn &optional tags)
