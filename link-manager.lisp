@@ -113,6 +113,16 @@
 ;                                #'(lambda (link) (find (first tags) (bookmark-tags link))) database)))
 ;     (t database)))
 
+(defun flatten (l)
+  "Flatten list."
+  (cond ((null l) nil)
+        ((atom (first l)) (cons (first l) (flatten (rest l))))
+        (t (append (flatten (first l)) (flatten (rest l))))))
+
+(defun show-all-tags (database)
+  "Make a list of all unique tags."
+  (remove-duplicates (flatten (mapcar 'tags database))))
+
 (defun load-db (filename)
   (with-open-file (in filename)
     (with-standard-io-syntax (setf *db* (read in)))))
