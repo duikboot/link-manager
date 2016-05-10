@@ -33,6 +33,7 @@
   (id (funcall get-id) :read-only t)  ; set default function next-value then call it on creation
   title
   link
+  summary
   (tags '() :type list)
   (date-added (get-universal-time) :read-only t)
   (read? nil))
@@ -41,10 +42,11 @@
   "Push cd onto *db* stack"
   (push link *db*))
 
-(defun make-link (title link tags &optional read?)
+(defun make-link (title link summary tags &optional read?)
   "Create structure for link"
   (add-record
-    (make-bookmark :title title :link link :tags tags :read? read?)))
+    (make-bookmark :title title :link link :summary summary :tags tags
+                   :read? read?)))
 
 (defun save-db (filename)
   "Save current *db* to file."
@@ -74,20 +76,31 @@
     (with-standard-io-syntax
       (print *db* out))))
 
-(defmacro where-tags-in (database)
+(defmacro where-keyword-in (func attribute database)
   "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
-  `(remove-if-not #'(lambda (link) (find (first tags) (tags link))) ,database))
+  `(remove-if-not #'(lambda (link) (find (first ,attribute) (,func link))) ,database))
 
-(defun select-links-with-tags (tags database)
+(defun select-links-with-tags (tags-list database)
   "Select all the bookmarks with tags"
   (cond
-    ((equal (length tags) 1) (where-tags-in database))
-    ((> (length tags) 1)
-     (select-links-with-tags (rest tags) (where-tags-in database)))
+    ((equal (length tags-list) 1) (where-keyword-in tags tags-list database))
+    ((> (length tags-list) 1)
+     (select-links-with-tags (rest tags-list) (where-keyword-in tags tags-list database)))
     (t database)))
 
-(defun select (selector-fn &optional tags)
-  (select-links-with-tags tags (remove-if-not selector-fn *db*)))
+(defun select-links-with-summary (summary-list database)
+  "Select all the bookmarks with summary"
+  (cond
+    ((equal (length summary-list) 1) (where-keyword-in summary summary-list database))
+    ((> (length summary-list) 1)
+     (select-links-with-summary (rest summary-list) (where-keyword-in summary summary-list database)))
+    (t database)))
+
+(defun select (selector-fn &key tags summary)
+  "(select (where 'read? ()) :tags '(python) :summary '(language))"
+  (select-links-with-summary summary
+                             (select-links-with-tags tags
+                                                     (remove-if-not selector-fn *db*))))
 
 (defun flatten (l)
   "Flatten list."
@@ -113,15 +126,16 @@
 (defmacro where (&rest clauses)
   `#'(lambda (link) (and ,@(make-comparison-list clauses))))
 
-(defun update (selector-fn &key title link tags (read? nil read-p))
+(defun update (selector-fn &key title link summary tags (read? nil read-p))
   (setf *db*
         (mapcar
           #'(lambda (row)
               (when (funcall selector-fn row)
-                (if title  (setf (title row) title))
-                (if link   (setf (link row) link))
-                (if tags   (setf (tags row) tags))
-                (if read-p (setf (read? row) read?)))
+                (if title   (setf (title row) title))
+                (if link    (setf (link row) link))
+                (if summary (setf (summary row) summary))
+                (if tags    (setf (tags row) tags))
+                (if read-p  (setf (read? row) read?)))
               row) *db*)))
 
 (defun save ()
