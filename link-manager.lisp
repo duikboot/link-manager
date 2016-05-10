@@ -33,7 +33,7 @@
   (id (funcall get-id) :read-only t)  ; set default function next-value then call it on creation
   title
   link
-  summary
+  (summary '() :type list)
   (tags '() :type list)
   (date-added (get-universal-time) :read-only t)
   (read? nil))
