@@ -112,6 +112,15 @@
   "Make a list of all unique tags."
   (remove-duplicates (flatten (mapcar 'tags database))))
 
+; * (show-all-unique-elements #'tags *db*)
+
+; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
+; * (show-all-unique-elements #'summary *db*)
+
+(defun show-all-unique-elements (fn database)
+  "Make a list of all unique tags."
+  (remove-duplicates (flatten (mapcar fn database))))
+
 (defun load-db (filename)
   (with-open-file (in filename)
     (with-standard-io-syntax (setf *db* (read in)))))
