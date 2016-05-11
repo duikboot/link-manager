@@ -18,12 +18,10 @@
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
 
-(defun next-value (filename)
-  (with-open-file (in filename)
-    (with-standard-io-syntax (setf *highest-id* (read in))))
+(defun next-value ()
   #'(lambda () (incf *highest-id*)))
 
-(defvar get-id (next-value *counter*))
+(defvar get-id (next-value))
 
 ; (multiple-value-bind (sec min hour day month year)
 ; (get-decoded-time) (format nil "~A ~2,'0d~2,'0d ~A ~A" year month day hour s
@@ -54,6 +52,8 @@
                   :direction :output
                   :if-exists :supersede)
     (with-standard-io-syntax
+        (print *highest-id* out))
+    (with-standard-io-syntax
       (print *db* out))))
 
 (defun save-counter (filename)
@@ -64,36 +64,24 @@
     (with-standard-io-syntax
       (print *highest-id* out))))
 
-(defun load-db (filename)
-  (with-open-file (in filename)
-    (with-standard-io-syntax (setf *db* (read in)))))
-
-(defun save-db (filename)
-  "Save current *db* to file."
-  (with-open-file (out filename
-                  :direction :output
-                  :if-exists :supersede)
-    (with-standard-io-syntax
-      (print *db* out))))
-
-(defmacro where-keyword-in (func attribute database)
+(defmacro select-in (func attribute database)
   "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
   `(remove-if-not #'(lambda (link) (find (first ,attribute) (,func link))) ,database))
 
 (defun select-links-with-tags (tags-list database)
   "Select all the bookmarks with tags"
   (cond
-    ((equal (length tags-list) 1) (where-keyword-in tags tags-list database))
+    ((equal (length tags-list) 1) (select-in tags tags-list database))
     ((> (length tags-list) 1)
-     (select-links-with-tags (rest tags-list) (where-keyword-in tags tags-list database)))
+     (select-links-with-tags (rest tags-list) (select-in tags tags-list database)))
     (t database)))
 
 (defun select-links-with-summary (summary-list database)
   "Select all the bookmarks with summary"
   (cond
-    ((equal (length summary-list) 1) (where-keyword-in summary summary-list database))
+    ((equal (length summary-list) 1) (select-in summary summary-list database))
     ((> (length summary-list) 1)
-     (select-links-with-summary (rest summary-list) (where-keyword-in summary summary-list database)))
+     (select-links-with-summary (rest summary-list) (select-in summary summary-list database)))
     (t database)))
 
 (defun select (selector-fn &key tags summary)
@@ -102,15 +90,19 @@
                              (select-links-with-tags tags
                                                      (remove-if-not selector-fn *db*))))
 
+(defun delete-link (id)
+  (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
+
+
 (defun flatten (l)
   "Flatten list."
   (cond ((null l) nil)
         ((atom (first l)) (cons (first l) (flatten (rest l))))
         (t (append (flatten (first l)) (flatten (rest l))))))
 
-(defun show-all-tags (database)
-  "Make a list of all unique tags."
-  (remove-duplicates (flatten (mapcar 'tags database))))
+; (defun show-all-tags (database)
+;   "Make a list of all unique tags."
+;   (remove-duplicates (flatten (mapcar 'tags database))))
 
 ; * (show-all-unique-elements #'tags *db*)
 
@@ -123,6 +115,7 @@
 
 (defun load-db (filename)
   (with-open-file (in filename)
+    (with-standard-io-syntax (setf *highest-id* (read in)))
     (with-standard-io-syntax (setf *db* (read in)))))
 
 (defun make-comparison-exp (field value)
