@@ -46,24 +46,6 @@
     (make-bookmark :title title :link link :summary summary :tags tags
                    :read? read?)))
 
-(defun save-db (filename)
-  "Save current *db* to file."
-  (with-open-file (out filename
-                  :direction :output
-                  :if-exists :supersede)
-    (with-standard-io-syntax
-        (print *highest-id* out))
-    (with-standard-io-syntax
-      (print *db* out))))
-
-(defun save-counter (filename)
-  "Save current *counter* to file."
-  (with-open-file (out filename
-                  :direction :output
-                  :if-exists :supersede)
-    (with-standard-io-syntax
-      (print *highest-id* out))))
-
 (defmacro select-in (func attribute database)
   "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
   `(remove-if-not #'(lambda (link) (find (first ,attribute) (,func link))) ,database))
@@ -113,11 +95,6 @@
   "Make a list of all unique tags."
   (remove-duplicates (flatten (mapcar fn database))))
 
-(defun load-db (filename)
-  (with-open-file (in filename)
-    (with-standard-io-syntax (setf *highest-id* (read in)))
-    (with-standard-io-syntax (setf *db* (read in)))))
-
 (defun make-comparison-exp (field value)
   `(equal (slot-value link ,field) ,value))
 
@@ -140,6 +117,23 @@
                 (if read-p  (setf (read? row) read?)))
               row) *db*)))
 
+(defun load-db (filename)
+  (with-open-file (in filename)
+    (with-standard-io-syntax
+      (setf *highest-id* (read in))
+      (setf *db* (read in)))))
+
+(defun save-db (filename)
+  "Save current *db* to file."
+  (with-open-file (out filename
+                  :direction :output
+                  :if-exists :supersede)
+    (with-standard-io-syntax
+        (print *db* out)
+        (print *highest-id* out))))
+
 (defun save ()
-  (save-db "test.db")
-  (save-counter "counter"))
+  (save-db "test.db"))
+
+(defun load ()
+  ((load-db "test.db")))
