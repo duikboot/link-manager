@@ -66,6 +66,7 @@
      (select-links-with-summary (rest summary-list) (select-in summary summary-list database)))
     (t database)))
 
+; (select (where 'read? nil) :summary '(lisp))
 (defun select (selector-fn &key tags summary)
   "(select (where 'read? ()) :tags '(python) :summary '(language))"
   (select-links-with-summary summary
@@ -75,21 +76,15 @@
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
 
-
 (defun flatten (l)
   "Flatten list."
   (cond ((null l) nil)
         ((atom (first l)) (cons (first l) (flatten (rest l))))
         (t (append (flatten (first l)) (flatten (rest l))))))
 
-; (defun show-all-tags (database)
-;   "Make a list of all unique tags."
-;   (remove-duplicates (flatten (mapcar 'tags database))))
-
 ; * (show-all-unique-elements #'tags *db*)
-
-; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
 ; * (show-all-unique-elements #'summary *db*)
+; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
 
 (defun show-all-unique-elements (fn database)
   "Make a list of all unique tags."
@@ -117,7 +112,7 @@
                 (if read-p  (setf (read? row) read?)))
               row) *db*)))
 
-(defun load-db (filename)
+(defun load-database (filename)
   (with-open-file (in filename)
     (with-standard-io-syntax
       (setf *highest-id* (read in))
@@ -135,5 +130,5 @@
 (defun save ()
   (save-db "test.db"))
 
-(defun load ()
-  ((load-db "test.db")))
+(defun load-db ()
+  (load-database "test.db"))
