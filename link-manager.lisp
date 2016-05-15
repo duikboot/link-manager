@@ -28,7 +28,8 @@
 
 (defstruct (bookmark :conc-name)
   "Bookmark structure"
-  (id (funcall get-id) :read-only t)  ; set default function next-value then call it on creation
+  ; set default function next-value then call it on creation
+  (id (funcall get-id) :read-only t)
   title
   link
   (summary '() :type list)
@@ -48,7 +49,8 @@
 
 (defmacro select-in (func attribute database)
   "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
-  `(remove-if-not #'(lambda (link) (find (first ,attribute) (,func link))) ,database))
+  `(remove-if-not #'(lambda (link)
+                      (find (first ,attribute) (,func link))) ,database))
 
 (defun select-links-with-tags (tags-list database)
   "Select all the bookmarks with tags"
@@ -67,11 +69,12 @@
     (t database)))
 
 ; (select (where 'read? nil) :summary '(lisp))
-(defun select (selector-fn &key tags summary)
+; (select  :selector-fn (where 'read? nil))
+(defun select (&key (fn #'(lambda (x) x)) tags summary)
   "(select (where 'read? ()) :tags '(python) :summary '(language))"
   (select-links-with-summary summary
                              (select-links-with-tags tags
-                                                     (remove-if-not selector-fn *db*))))
+                                                     (remove-if-not fn *db*))))
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
@@ -100,11 +103,11 @@
 (defmacro where (&rest clauses)
   `#'(lambda (link) (and ,@(make-comparison-list clauses))))
 
-(defun update (selector-fn &key title link summary tags (read? nil read-p))
+(defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
   (setf *db*
         (mapcar
           #'(lambda (row)
-              (when (funcall selector-fn row)
+              (when (funcall fn row)
                 (if title   (setf (title row) title))
                 (if link    (setf (link row) link))
                 (if summary (setf (summary row) summary))
