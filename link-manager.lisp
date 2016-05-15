@@ -127,8 +127,8 @@
                   :direction :output
                   :if-exists :supersede)
     (with-standard-io-syntax
-        (print *db* out)
-        (print *highest-id* out))))
+        (print *highest-id* out)
+        (print *db* out))))
 
 (defun save ()
   (save-db "test.db"))
