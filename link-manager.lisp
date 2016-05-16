@@ -13,7 +13,11 @@
 
 
 (defvar *db* nil)
+(defvar *web-acceptor* nil)
 (defparameter *counter* "counter")
+(defparameter *web-port* 8080)
+
+(defclass web-acceptor (hunchentoot:acceptor) ())
 
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
@@ -115,6 +119,14 @@
                 (if read-p  (setf (read? row) read?)))
               row) *db*)))
 
+
+; (defclass link ()
+;     ((id :accessor link-id :initform 0)
+;      (title :accessor link-title)
+;      (tags :accessor link-tags :initform '())))
+
+; (sort *db* '< :key 'date-added)
+
 (defun load-database (filename)
   (with-open-file (in filename)
     (with-standard-io-syntax
@@ -135,3 +147,24 @@
 
 (defun load-db ()
   (load-database "test.db"))
+
+(defun start-server ()
+  (setf *web-acceptor*
+        (hunchentoot:start
+          (make-instance 'hunchentoot:easy-acceptor :port *web-port*))))
+
+(defun stop-web-acceptor ()
+  (hunchentoot:stop *web-acceptor*))
+
+; (defun start-server ()
+;   (when *web-acceptor*
+;     (print "Server already started. Restarting")
+;     (hunchentoot:stop *web-acceptor*))
+;   (print "starting story server on port ~S" *web-port*)
+;   (reset-server)
+;   (setf *web-acceptor*
+;         (make-instance 'web-acceptor
+;                        :port *web-port*
+;                        :access-log-destination sb-sys:*stdout*
+;                        :message-log-destination sb-sys:*stdout*))
+;   (hunchentoot:start *web-acceptor*))

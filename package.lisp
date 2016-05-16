@@ -1,7 +1,7 @@
 ;;;; package.lisp
 
 (defpackage :link-manager
-  (:use :cl)
+  (:use :cl :hunchentoot)
   (:export :make-link
            :save-db
            :load-db
