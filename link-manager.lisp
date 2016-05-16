@@ -149,12 +149,18 @@
   (load-database "test.db"))
 
 (defun start-server ()
-  (setf *web-acceptor*
-        (hunchentoot:start
-          (make-instance 'hunchentoot:easy-acceptor :port *web-port*))))
+  (if *web-acceptor*
+    (format t "~%Webserver already started~%")
+    (setf *web-acceptor*
+          (hunchentoot:start
+            (make-instance 'hunchentoot:easy-acceptor :port *web-port*)))))
 
-(defun stop-web-acceptor ()
-  (hunchentoot:stop *web-acceptor*))
+(defun stop-server ()
+  (if (not *web-acceptor*)
+    (format t "~%Webserver not running~%")
+    (progn
+      (hunchentoot:stop *web-acceptor*)
+      (setf *web-acceptor* nil))))
 
 ; (defun start-server ()
 ;   (when *web-acceptor*
@@ -168,3 +174,12 @@
 ;                        :access-log-destination sb-sys:*stdout*
 ;                        :message-log-destination sb-sys:*stdout*))
 ;   (hunchentoot:start *web-acceptor*))
+
+(hunchentoot:define-easy-handler (links :uri "/links") ()
+ (setf (hunchentoot:content-type*) "text/plain")
+ (format nil "~%Title~% ~a" (title (first *db*))))
+ ; (mapcar #'(lambda (row) (format nil "Title: ~a" (title row))) *db*))
+
+; (hunchentoot:define-easy-handler (links :uri "/links") ()
+;  (setf (hunchentoot:content-type*) "text/plain")
+;  (format nil "Hello, ~a! I am Vito! ~%I build a website with Lisp!!!" name))
