@@ -75,7 +75,7 @@
 ; (select (where 'read? nil) :summary '(lisp))
 ; (select  :selector-fn (where 'read? nil))
 (defun select (&key (fn #'(lambda (x) x)) tags summary)
-  "(select (where 'read? ()) :tags '(python) :summary '(language))"
+  "(select :fn (where id 1) :tags '(python) :summary '(language))"
   (select-links-with-summary summary
                              (select-links-with-tags tags
                                                      (remove-if-not fn *db*))))
@@ -162,24 +162,23 @@
       (hunchentoot:stop *web-acceptor*)
       (setf *web-acceptor* nil))))
 
-; (defun start-server ()
-;   (when *web-acceptor*
-;     (print "Server already started. Restarting")
-;     (hunchentoot:stop *web-acceptor*))
-;   (print "starting story server on port ~S" *web-port*)
-;   (reset-server)
-;   (setf *web-acceptor*
-;         (make-instance 'web-acceptor
-;                        :port *web-port*
-;                        :access-log-destination sb-sys:*stdout*
-;                        :message-log-destination sb-sys:*stdout*))
-;   (hunchentoot:start *web-acceptor*))
+; (setq *dispatch-table*
+;       (list
+;        (create-regex-dispatcher "^/$" 'controller-to-index)
+;        (create-regex-dispatcher "^/movies$" 'controller-index)
+;        (create-regex-dispatcher "^/movies/new" 'controller-new)
+;        (create-regex-dispatcher "^/movies/[0-9]+$" 'controller-show)))
 
-(hunchentoot:define-easy-handler (links :uri "/links") ()
- (setf (hunchentoot:content-type*) "text/plain")
- (format nil "~%Title~% ~a" (title (first *db*))))
- ; (mapcar #'(lambda (row) (format nil "Title: ~a" (title row))) *db*))
+(hunchentoot:define-easy-handler (show-links :uri "/links" :default-request-type :GET) ()
+    (with-html-output-to-string (*standard-output* nil :prologue t)
+        (:html
+          (:head (:title "List all links"))
+          (:body
+            (:div (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
 
-; (hunchentoot:define-easy-handler (links :uri "/links") ()
-;  (setf (hunchentoot:content-type*) "text/plain")
-;  (format nil "Hello, ~a! I am Vito! ~%I build a website with Lisp!!!" name))
+; (hunchentoot:define-easy-handler (show-link :uri "/links" :default-request-type :GET) (id)
+;     (with-html-output-to-string (*standard-output* nil :prologue t)
+;         (:html
+;           (:head (:title "List all links"))
+;           (:body
+;             (htm (:div (first (select :fn `(where ,'id id)))))))))
