@@ -42,8 +42,6 @@
   (date-added (get-universal-time) :read-only t)
   (read? nil))
 
-
-
 (eval-when (:compile-toplevel)
   (defun make-comparison-exp (field value)
     `(equal (slot-value link ,field) ,value)))
@@ -170,23 +168,41 @@
       (hunchentoot:stop *web-acceptor*)
       (setf *web-acceptor* nil))))
 
-; (setq *dispatch-table*
-;       (list
-;        (create-regex-dispatcher "^/$" 'controller-to-index)
-;        (create-regex-dispatcher "^/movies$" 'controller-index)
-;        (create-regex-dispatcher "^/movies/new" 'controller-new)
-;        (create-regex-dispatcher "^/movies/[0-9]+$" 'controller-show)))
+(setq *dispatch-table*
+      (list
+       (create-regex-dispatcher "^/$" 'index)
+       (create-regex-dispatcher "^/bookmarks/$" 'index)
+       (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
+       (create-regex-dispatcher "^/movies$" 'controller-index)
+       (create-regex-dispatcher "^/movies/new" 'controller-new)
+       (create-regex-dispatcher "^/movies/[0-9]+$" 'controller-show)))
 
-(hunchentoot:define-easy-handler (show-links :uri "/links" :default-request-type :GET) ()
-    (with-html-output-to-string (*standard-output* nil :prologue t)
+(defun index ()
+  (with-html-output-to-string (*standard-output* nil :prologue t)
         (:html
           (:head (:title "List all links"))
           (:body
             (:div (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
 
-(hunchentoot:define-easy-handler (show-link :uri "/link" :default-request-type :GET) (id)
-    (with-html-output-to-string (*standard-output* nil :prologue t)
+
+(defun get-bookmark ()
+  (let ((bookmark-id (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
+    (with-html-output-to-string
+      (*standard-output* nil :prologue t)
         (:html
-          (:head (:title "List all links"))
-          (:body
-            (htm (:div (fmt "~A" (first (select :fn (where 'id (parse-integer id)))))))))))
+            (:head (:title "List all links"))
+            (:body
+            (htm (:div (fmt "~A" (first (select :fn (where 'id (parse-integer bookmark-id))))))))))))
+; (hunchentoot:define-easy-handler (show-links :uri "/links" :default-request-type :GET) ()
+;     (with-html-output-to-string (*standard-output* nil :prologue t)
+;         (:html
+;           (:head (:title "List all links"))
+;           (:body
+;             (:div (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
+
+; (hunchentoot:define-easy-handler (show-link :uri "/link" :default-request-type :GET) (id)
+;     (with-html-output-to-string (*standard-output* nil :prologue t)
+;         (:html
+;           (:head (:title "List all links"))
+;           (:body
+;             (htm (:div (fmt "~A" (first (select :fn (where 'id (parse-integer id)))))))))))
