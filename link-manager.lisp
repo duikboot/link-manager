@@ -126,13 +126,6 @@
               row) *db*)))
 
 
-; (defclass link ()
-;     ((id :accessor link-id :initform 0)
-;      (title :accessor link-title)
-;      (tags :accessor link-tags :initform '())))
-
-; (sort *db* '< :key 'date-added)
-
 (defun load-database (filename)
   (with-open-file (in filename)
     (with-standard-io-syntax
@@ -172,17 +165,26 @@
       (list
        (create-regex-dispatcher "^/$" 'index)
        (create-regex-dispatcher "^/bookmarks/$" 'index)
-       (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
-       (create-regex-dispatcher "^/movies$" 'controller-index)
-       (create-regex-dispatcher "^/movies/new" 'controller-new)
-       (create-regex-dispatcher "^/movies/[0-9]+$" 'controller-show)))
+       (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)))
 
 (defun index ()
   (with-html-output-to-string (*standard-output* nil :prologue t)
         (:html
-          (:head (:title "List all links"))
+          (:head (:title "Show all bookmarks"))
           (:body
-            (:div (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
+            (:div
+              (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
+
+; (defun index ()
+;   (with-html-output-to-string (*standard-output* nil :prologue t)
+;         (:html
+;           (:head (:title "Show all bookmarks"))
+;           (:body
+;             (:div
+;               (mapcar #'(lambda (row)
+;                           (htm (:a :href (format nil "~A" (id row) )(format nil "~A" (id row))))
+;                           ) *db*))))))
+
 
 
 (defun get-bookmark ()
@@ -190,6 +192,6 @@
     (with-html-output-to-string
       (*standard-output* nil :prologue t)
         (:html
-            (:head (:title "List all links"))
+            (:head (:title "Bookmark details"))
             (:body
             (htm (:div (fmt "~A" (first (select :fn (where 'id (parse-integer bookmark-id))))))))))))
