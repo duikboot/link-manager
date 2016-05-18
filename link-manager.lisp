@@ -193,16 +193,3 @@
             (:head (:title "List all links"))
             (:body
             (htm (:div (fmt "~A" (first (select :fn (where 'id (parse-integer bookmark-id))))))))))))
-; (hunchentoot:define-easy-handler (show-links :uri "/links" :default-request-type :GET) ()
-;     (with-html-output-to-string (*standard-output* nil :prologue t)
-;         (:html
-;           (:head (:title "List all links"))
-;           (:body
-;             (:div (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
-
-; (hunchentoot:define-easy-handler (show-link :uri "/link" :default-request-type :GET) (id)
-;     (with-html-output-to-string (*standard-output* nil :prologue t)
-;         (:html
-;           (:head (:title "List all links"))
-;           (:body
-;             (htm (:div (fmt "~A" (first (select :fn (where 'id (parse-integer id)))))))))))
