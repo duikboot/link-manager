@@ -17,7 +17,8 @@
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
 
-(defclass web-acceptor (hunchentoot:acceptor) ())
+; (defclass web-acceptor (hunchentoot:acceptor) ())
+
 
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
@@ -40,6 +41,20 @@
   (tags '() :type list)
   (date-added (get-universal-time) :read-only t)
   (read? nil))
+
+
+
+(eval-when (:compile-toplevel)
+  (defun make-comparison-exp (field value)
+    `(equal (slot-value link ,field) ,value)))
+
+(eval-when (:compile-toplevel)
+ (defun make-comparison-list (fields)
+   (loop while fields collecting
+         (make-comparison-exp (pop fields) (pop fields)))))
+
+(defmacro where (&rest clauses)
+  `#'(lambda (link) (and ,@(make-comparison-list clauses))))
 
 (defun add-record (link)
   "Push cd onto *db* stack"
@@ -80,6 +95,9 @@
                              (select-links-with-tags tags
                                                      (remove-if-not fn *db*))))
 
+(defun select-by-id (id)
+     (first (select :fn (where 'id id))))
+
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
 
@@ -96,16 +114,6 @@
 (defun show-all-unique-elements (fn database)
   "Make a list of all unique tags."
   (remove-duplicates (flatten (mapcar fn database))))
-
-(defun make-comparison-exp (field value)
-  `(equal (slot-value link ,field) ,value))
-
-(defun make-comparison-list (fields)
-  (loop while fields collecting
-        (make-comparison-exp (pop fields) (pop fields))))
-
-(defmacro where (&rest clauses)
-  `#'(lambda (link) (and ,@(make-comparison-list clauses))))
 
 (defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
   (setf *db*
@@ -176,9 +184,9 @@
           (:body
             (:div (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
 
-; (hunchentoot:define-easy-handler (show-link :uri "/links" :default-request-type :GET) (id)
-;     (with-html-output-to-string (*standard-output* nil :prologue t)
-;         (:html
-;           (:head (:title "List all links"))
-;           (:body
-;             (htm (:div (first (select :fn `(where ,'id id)))))))))
+(hunchentoot:define-easy-handler (show-link :uri "/link" :default-request-type :GET) (id)
+    (with-html-output-to-string (*standard-output* nil :prologue t)
+        (:html
+          (:head (:title "List all links"))
+          (:body
+            (htm (:div (fmt "~A" (first (select :fn (where 'id (parse-integer id)))))))))))
