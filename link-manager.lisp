@@ -165,7 +165,9 @@
       (list
        (create-regex-dispatcher "^/$" 'index)
        (create-regex-dispatcher "^/bookmarks/$" 'index)
-       (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)))
+       (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
+       (create-regex-dispatcher "^/bookmarks/[0-9]+/edit$" 'edit-bookmark)
+       ))
 
 (defun index ()
   (with-html-output-to-string (*standard-output* nil :prologue t)
@@ -173,19 +175,18 @@
           (:head (:title "Show all bookmarks"))
           (:body
             (:div
-              (mapcar #'(lambda (row) (htm (:p (fmt "~A" row)))) *db*))))))
+              (mapcar #'(lambda (row)
+                          (htm (:a :href (format nil "bookmarks/~A" (id row)) "details"))
+                          (htm (:p (fmt "~A" row)))) *db*))))))
 
-; (defun index ()
-;   (with-html-output-to-string (*standard-output* nil :prologue t)
-;         (:html
-;           (:head (:title "Show all bookmarks"))
-;           (:body
-;             (:div
-;               (mapcar #'(lambda (row)
-;                           (htm (:a :href (format nil "~A" (id row) )(format nil "~A" (id row))))
-;                           ) *db*))))))
-
-
+(defun edit-bookmark ()
+  (let ((bookmark-id (first (reverse (split-sequence:split-sequence #\/ (request-uri*)))))))
+     (with-html-output-to-string
+       (*standard-output* nil :prologue t)
+       :html
+       (:head (:title "Bookmark details"))
+       (:body 
+         (htm (:a :href "/row" "test")))))
 
 (defun get-bookmark ()
   (let ((bookmark-id (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
