@@ -7,5 +7,6 @@
   :serial t
   :depends-on (:hunchentoot :cl-who :split-sequence)
   :components ((:file "package")
-               (:file "link-manager")))
+               (:file "link-manager")
+               (:file "web")))
 
