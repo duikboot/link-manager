@@ -14,9 +14,9 @@
 
 (defvar *db* nil)
 (defvar *web-acceptor* nil)
+(defparameter *database* "test.db")
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
-
 
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
@@ -33,24 +33,14 @@
   "Bookmark structure"
   ; set default function next-value then call it on creation
   (id (funcall get-id) :read-only t)
-  title
+  (title '() :type list)
   link
   (summary '() :type list)
   (tags '() :type list)
   (date-added (get-universal-time) :read-only t)
+  (date-modified (get-universal-time))
   (read? nil))
 
-(eval-when (:compile-toplevel)
-  (defun make-comparison-exp (field value)
-    `(equal (slot-value link ,field) ,value)))
-
-(eval-when (:compile-toplevel)
- (defun make-comparison-list (fields)
-   (loop while fields collecting
-         (make-comparison-exp (pop fields) (pop fields)))))
-
-(defmacro where (&rest clauses)
-  `#'(lambda (link) (and ,@(make-comparison-list clauses))))
 
 (defun add-record (link)
   "Push cd onto *db* stack"
@@ -61,11 +51,6 @@
   (add-record
     (make-bookmark :title title :link link :summary summary :tags tags
                    :read? read?)))
-
-(defmacro select-in (func attribute database)
-  "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
-  `(remove-if-not #'(lambda (link)
-                      (find (first ,attribute) (,func link))) ,database))
 
 (defun select-links-with-tags (tags-list database)
   "Select all the bookmarks with tags"
@@ -112,6 +97,7 @@
   (remove-duplicates (flatten (mapcar fn database))))
 
 (defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
+  "(update :fn (where 'id 1) :tags '(python programming homepage tutorial))"
   (setf *db*
         (mapcar
           #'(lambda (row)
@@ -121,14 +107,26 @@
                 (if summary (setf (summary row) summary))
                 (if tags    (setf (tags row) tags))
                 (if read-p  (setf (read? row) read?)))
+              (setf (date-modified row) (get-universal-time))
               row) *db*)))
 
+;; (sort *db* '< :key 'date-added)
+
+(defun sort-database (database &key id title date-added read?)
+  (cond
+   ((if id (sort database '< :key title)))
+   ((if title  (sort database '< :key title)))
+   ((if date-added (sort database '< :key date-added)))
+   ((if read?  (sort database '< :key read?)))
+   (t (sort database '< :key 'id))))
 
 (defun load-database (filename)
-  (with-open-file (in filename)
-    (with-standard-io-syntax
-      (setf *highest-id* (read in))
-      (setf *db* (read in)))))
+  (with-open-file (in filename
+                      :if-does-not-exist nil)
+    (when in
+      (with-standard-io-syntax
+        (setf *highest-id* (read in))
+        (setf *db* (read in))))))
 
 (defun save-db (filename)
   "Save current *db* to file."
@@ -140,7 +138,7 @@
         (print *db* out))))
 
 (defun save ()
-  (save-db "test.db"))
+  (save-db *database*))
 
 (defun load-db ()
-  (load-database "test.db"))
+  (load-database *database*))

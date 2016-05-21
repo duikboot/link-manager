@@ -6,7 +6,9 @@
   :license "Specify license here"
   :serial t
   :depends-on (:hunchentoot :cl-who :split-sequence)
+  :serial t
   :components ((:file "package")
+               (:file "macros")
                (:file "link-manager")
                (:file "web")))
 
