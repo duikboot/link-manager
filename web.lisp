@@ -33,7 +33,12 @@
                             (:a :href
                                 (format nil "bookmarks/~A" (id row)) "details"))
                           (htm
-                            (:p (fmt "~A" row)))) (sort-database *db*)))))))
+                            (:div (fmt "~A" (title row)))
+                            (:div (fmt "~A" (link row)))
+                            (:div (fmt "~A" (summary row)))
+                            (:div (fmt "~A" (tags row)))
+                            :br
+                            )) (sort-database *db*)))))))
 
 (defun edit-bookmark ()
   (let ((bookmark-id
@@ -59,6 +64,10 @@
                      (first
                        (select :fn
                                (where 'id (parse-integer bookmark-id))))))))))))
+
+(defun start-app ()
+  (start-server)
+  (load-db))
 
 (defun stop-app ()
   (stop-server)
