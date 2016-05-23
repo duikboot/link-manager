@@ -22,23 +22,26 @@
        (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
        (create-regex-dispatcher "^/bookmarks/[0-9]+/edit$" 'edit-bookmark)))
 
+
 (defun index ()
-  (with-html-output-to-string (*standard-output* nil :prologue t)
-        (:html
-          (:head (:title "Show all bookmarks"))
-          (:body
-            (:div
-              (mapcar #'(lambda (row)
-                          (htm
-                            (:a :href
-                                (format nil "bookmarks/~A" (id row)) "details"))
-                          (htm
-                            (:div (fmt "~A" (title row)))
-                            (:div (fmt "~A" (link row)))
-                            (:div (fmt "~A" (summary row)))
-                            (:div (fmt "~A" (tags row)))
-                            :br
-                            )) (sort-database *db*)))))))
+  (let ((url-part (query-string*)))
+    (format t "~a~%" url-part)
+    (with-html-output-to-string (*standard-output* nil :prologue t)
+          (:html
+            (:head (:title "Show all bookmarks"))
+            (:body
+              (:div
+                (mapcar #'(lambda (row)
+                            (htm
+                              (:a :href
+                                  (format nil "/bookmarks/~A" (id row)) "details"))
+                            (htm
+                              (:div (fmt "~A" (title row)))
+                              (:div (fmt "~A" (link row)))
+                              (:div (fmt "~A" (summary row)))
+                              (:div (fmt "~A" (tags row)))
+                              :br
+                              )) (sort-database *db*))))))))
 
 (defun edit-bookmark ()
   (let ((bookmark-id
