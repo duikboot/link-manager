@@ -106,19 +106,11 @@
                 (if link    (setf (link row) link))
                 (if summary (setf (summary row) summary))
                 (if tags    (setf (tags row) tags))
-                (if read-p  (setf (read? row) read?)))
-              (setf (date-modified row) (get-universal-time))
+                (if read-p  (setf (read? row) read?))
+                (setf (date-modified row) (get-universal-time)))
               row) *db*)))
 
 ;; (sort *db* '< :key 'date-added)
-
-(defun sort-database (database &key id title date-added read?)
-  (cond
-   ((if id (sort database '< :key title)))
-   ((if title  (sort database '< :key title)))
-   ((if date-added (sort database '< :key date-added)))
-   ((if read?  (sort database '< :key read?)))
-   (t (sort database '< :key 'id))))
 
 (defun load-database (filename)
   (with-open-file (in filename
