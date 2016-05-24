@@ -22,39 +22,26 @@
        (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
        (create-regex-dispatcher "^/bookmarks/[0-9]+/edit$" 'edit-bookmark)))
 
-(defun get-order-key (x)
-    #'x
-  )
-
 (defun get-order (x)
-  (format t "~%Params: ~A~%" (string= "desc" x))
   (if (string= "asc" x) #'< #'>))
-
-    ; ((key (get-order-key (get-parameters*))))
-    ; ((order (get-order (get-parameters*))))
-   ; let ((sort-by (get-parameter "order")))
 
 (defun index ()
   (let (
         (database (copy-list *db*))
         (order (get-order (get-parameter "order")))
-        (key (intern (string-upcase (get-parameter "sort"))))
-     )
-  (format t "~%ORDER ~A~%" order)
-  (format t "~%DATABASE 1: ~A~%" database)
+        (key (intern (string-upcase (get-parameter "sort")))))
     (sort database order :key key)
-  (format t "~%DATABASE 1: ~A~%" database)
     (with-html-output-to-string
       (*standard-output* nil :prologue t)
       (:html
-      (:head (:title "Show all bookmarks"))
-      (:body
+        (:head (:title "Show all bookmarks"))
+        (:body
           (:div
-          (mapcar #'(lambda (row)
-                      (htm
+            (mapcar #'(lambda (row)
+                        (htm
                           (:a :href
                               (format nil "/bookmarks/~A" (id row)) "details"))
-                      (htm
+                        (htm
                           (:div (fmt "~A" (title row)))
                           (:div (fmt "~A" (date-modified row)))
                           (:div (fmt "~A" (link row)))
@@ -66,12 +53,12 @@
 (defun edit-bookmark ()
   (let ((bookmark-id
           (first (reverse (split-sequence:split-sequence #\/ (request-uri*)))))))
-     (with-html-output-to-string
-       (*standard-output* nil :prologue t)
-       :html
-       (:head (:title "Bookmark details"))
-       (:body
-         (htm (:a :href "/row" "test")))))
+  (with-html-output-to-string
+    (*standard-output* nil :prologue t)
+    :html
+    (:head (:title "Bookmark details"))
+    (:body
+      (htm (:a :href "/row" "test")))))
 
 (defun get-bookmark ()
   (let ((bookmark-id
