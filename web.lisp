@@ -26,10 +26,12 @@
   (if (string= "asc" x) #'< #'>))
 
 (defun index ()
-  (let (
-        (database (copy-list *db*))
+  (let ((database (copy-list *db*))
         (order (get-order (get-parameter "order")))
-        (key (intern (string-upcase (get-parameter "sort")))))
+        (key (or
+               (intern
+                 (string-upcase (get-parameter "sort")))
+               'date-added)))
     (sort database order :key key)
     (with-html-output-to-string
       (*standard-output* nil :prologue t)
@@ -42,11 +44,12 @@
                           (:a :href
                               (format nil "/bookmarks/~A" (id row)) "details"))
                         (htm
-                          (:div (fmt "~A" (title row)))
-                          (:div (fmt "~A" (date-modified row)))
-                          (:div (fmt "~A" (link row)))
-                          (:div (fmt "~A" (summary row)))
-                          (:div (fmt "~A" (tags row)))
+                          (:div (fmt "Title: ~A" (title row)))
+                          (:div (fmt "Date added: ~A" (date-added row)))
+                          (:div (fmt "Date modified: ~A" (date-modified row)))
+                          (:div (fmt "Link: ~A" (link row)))
+                          (:div (fmt "Summary: ~A" (summary row)))
+                          (:div (fmt "Tags: ~A" (tags row)))
                           :br
                           )) database)))))))
 

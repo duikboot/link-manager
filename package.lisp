@@ -1,5 +1,5 @@
 ;;;; package.lisp
-;;;; link-manager.lispr
+;;;; link-manager.lisp
 
 (defpackage :link-manager
   (:use :cl :hunchentoot :cl-who))
