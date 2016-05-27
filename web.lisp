@@ -1,6 +1,8 @@
 
 (in-package :link-manager)
 
+(setf html-template:*default-template-pathname* #P"templates/")
+
 (defun start-server ()
   (if *web-acceptor*
     (format t "~%Webserver already started~%")
@@ -18,19 +20,27 @@
 (setq *dispatch-table*
       (list
        (create-regex-dispatcher "^/$" 'index)
-       (create-regex-dispatcher "^/bookmarks/$" 'index)
+       (create-regex-dispatcher "^/a/$" 'generate-index-page)
+       (create-regex-dispatcher "^/bookmarks/$" 'bookmarks)
        (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
        (create-regex-dispatcher "^/bookmarks/[0-9]+/edit$" 'edit-bookmark)))
 
 (defun get-order (x)
-  (if (string= "asc" x) #'< #'>))
+  (if (equalp "desc" x) #'> #'<))
 
 (defun index ()
+  (redirect "/bookmarks/"))
+
+(defun generate-index-page ()
+  "Generate the index page showing all the blog posts."
+      (with-output-to-string (stream)
+        (html-template:fill-and-print-template #P"index.html" '(:page-title "test") :stream stream)))
+
+(defun bookmarks ()
   (let ((database (copy-list *db*))
         (order (get-order (get-parameter "order")))
         (key (or
-               (intern
-                 (string-upcase (get-parameter "sort")))
+               (intern (string-upcase (get-parameter "sort")))
                'date-added)))
     (sort database order :key key)
     (with-html-output-to-string

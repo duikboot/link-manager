@@ -6,7 +6,7 @@
   :author "Arjen Dijkstra <dijkstra.arjen@gmail.com>"
   :license "Specify license here"
   :serial t
-  :depends-on (:hunchentoot :cl-who :split-sequence)
+  :depends-on (:hunchentoot :cl-who :split-sequence :html-template)
   :serial t
   :components ((:file "package")
                (:file "macros")
