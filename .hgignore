@@ -1,14 +1,3 @@
-syntax: glob
-
-.DS_Store
-*.pyc
-ENV
-*.swp
-*.swo
-.ropeproject
+linkmanager
+link-manager.fasl
 tags
-*.hi
-*.o
-*.orig
-.hsenv*
-.cabal-sandbox*
