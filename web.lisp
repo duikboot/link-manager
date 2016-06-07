@@ -43,25 +43,28 @@
                (intern (string-upcase (get-parameter "sort")))
                'date-added)))
     (sort database order :key key)
-    (with-html-output-to-string
-      (*standard-output* nil :prologue t)
-      (:html
-        (:head (:title "Show all bookmarks"))
-        (:body
-          (:div
-            (mapcar #'(lambda (row)
-                        (htm
-                          (:a :href
-                              (format nil "/bookmarks/~A" (id row)) "details"))
-                        (htm
-                          (:div (fmt "Title: ~A" (title row)))
-                          (:div (fmt "Date added: ~A" (date-added row)))
-                          (:div (fmt "Date modified: ~A" (date-modified row)))
-                          (:div (fmt "Link: ~A" (link row)))
-                          (:div (fmt "Summary: ~A" (summary row)))
-                          (:div (fmt "Tags: ~A" (tags row)))
-                          :br
-                          )) database)))))))
+    (render-bookmarks database)))
+
+(defun render-bookmarks (database)
+  (with-html-output-to-string
+    (*standard-output* nil :prologue t)
+    (:html
+      (:head (:title "Show all bookmarks"))
+      (:body
+        (:div
+          (mapcar #'(lambda (row)
+                      (htm
+                        (:a :href
+                            (format nil "/bookmarks/~A" (id row)) "details"))
+                      (htm
+                        (:div (fmt "Title: ~A" (title row)))
+                        (:div (fmt "Date added: ~A" (date-added row)))
+                        (:div (fmt "Date modified: ~A" (date-modified row)))
+                        (:div (fmt "Link: ~A" (link row)))
+                        (:div (fmt "Summary: ~A" (summary row)))
+                        (:div (fmt "Tags: ~A" (tags row)))
+                        :br
+                        )) database))))))
 
 (defun edit-bookmark ()
   (let ((bookmark-id
