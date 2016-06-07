@@ -26,8 +26,6 @@
 
 (defvar get-id (next-value))
 
-; (multiple-value-bind (sec min hour day month year)
-; (get-decoded-time) (format nil "~A ~2,'0d~2,'0d ~A ~A" year month day hour s
 
 (defstruct (bookmark :conc-name)
   "Bookmark structure"
@@ -69,7 +67,7 @@
     (t database)))
 
 ; (select (where 'read? nil) :summary '(lisp))
-; (select  :selector-fn (where 'read? nil))
+; (select  :fn (where 'read? nil))
 (defun select (&key (fn #'(lambda (x) x)) tags summary)
   "(select :fn (where id 1) :tags '(python) :summary '(language))"
   (select-links-with-summary summary
