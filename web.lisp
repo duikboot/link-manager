@@ -36,16 +36,26 @@
       (with-output-to-string (stream)
         (html-template:fill-and-print-template #P"index.html" '(:page-title "test") :stream stream)))
 
-(defun bookmarks ()
-  (let ((order (get-order (get-parameter "order")))
-        (key (or
-               (intern (string-upcase (get-parameter "sort")))
-               'date-added)))
-    (render-bookmarks (stable-sort (copy-list *db*) order :key key))))
+(defun create-query-sequence (sequence)
+  (if sequence (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence #\, sequence))) '()))
 
-(defun time-string (str date-time)
-  (multiple-value-bind (sec minute hour day month year) (decode-universal-time date-time)
-    (format nil "~a ~4d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d" str year month day hour minute sec)))
+(defun bookmarks ()
+  (let* ((order (get-order (get-parameter "order")))
+         (key (or
+                (intern (string-upcase (get-parameter "sort")))
+                'date-added))
+         (tags (or (get-parameter "tags") '()))
+         (summary (or (get-parameter "summary") '()))
+         (database (stable-sort (copy-list *db*) order :key key))
+         (database (select-links-with-tags (create-query-sequence tags) database))
+         (database (select-links-with-summary (create-query-sequence summary) database)))
+    (render-bookmarks database)))
+
+(defun format-time (str date-time)
+  (multiple-value-bind (sec minute hour date month year day daylight-p zone)
+    (decode-universal-time date-time)
+    (declare (ignore day daylight-p zone))
+    (format nil "~a ~4d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d" str year month date hour minute sec)))
 
 (defun render-bookmarks (database)
   (with-html-output-to-string
@@ -60,9 +70,8 @@
                         :br
                         (:a :href
                             (format nil "/bookmarks/~a" (id row)) "details")
-                        ; (:div (fmt "Title: ~A" (title row)))
-                        (:div (fmt (time-string "Date added: "(date-added row))))
-                        (:div (fmt (time-string "Date modified: " (date-modified row))))
+                        (:div (fmt (format-time "Date added: "(date-added row))))
+                        (:div (fmt (format-time "Date modified: " (date-modified row))))
                         (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
                         (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row)))
                         :br
