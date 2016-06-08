@@ -63,7 +63,7 @@
     (:html
       (:head (:title "Show all bookmarks"))
       (:body
-        (:div (fmt "~{ ~a ~}" (show-all-unique-elements 'tags *db*)))
+        (:div (fmt "Tags: ~{ ~a ~}" (show-all-unique-elements 'tags *db*)))
         (:div
           (htm :br)
           (mapcar #'(lambda (row)
@@ -76,8 +76,7 @@
                         (:div (fmt (format-time "Date modified: " (date-modified row))))
                         (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
                         (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row)))
-                        :br
-                        )) database))))))
+                        :br)) database))))))
 
 (defun edit-bookmark ()
   (let ((bookmark-id
