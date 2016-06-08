@@ -70,8 +70,7 @@
                       (htm
                         (:a :href (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
                         :br
-                        (:a :href
-                            (format nil "/bookmarks/~a" (id row)) "details")
+                        (:a :href (format nil "/bookmarks/~a" (id row)) "details")
                         (:div (fmt (format-time "Date added: "(date-added row))))
                         (:div (fmt (format-time "Date modified: " (date-modified row))))
                         (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))

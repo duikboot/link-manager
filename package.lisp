@@ -1,4 +1,4 @@
-;;;; package.lisp
+;;; package.lisp
 ;;;; link-manager.lisp
 ;;;; depends on Hunchentoot
 

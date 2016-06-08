@@ -14,6 +14,7 @@
 
 (defvar *db* nil)
 (defvar *web-acceptor* nil)
+
 (defparameter *database* "test.db")
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
@@ -25,7 +26,6 @@
   #'(lambda () (incf *highest-id*)))
 
 (defvar get-id (next-value))
-
 
 (defstruct (bookmark :conc-name)
   "Bookmark structure"
@@ -79,12 +79,6 @@
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
-
-(defun flatten (l)
-  "Flatten list."
-  (cond ((null l) nil)
-        ((atom (first l)) (cons (first l) (flatten (rest l))))
-        (t (append (flatten (first l)) (flatten (rest l))))))
 
 ; * (show-all-unique-elements #'tags *db*)
 ; * (show-all-unique-elements #'summary *db*)
