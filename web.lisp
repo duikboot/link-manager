@@ -63,7 +63,9 @@
     (:html
       (:head (:title "Show all bookmarks"))
       (:body
+        (:div (fmt "~{ ~a ~}" (show-all-unique-elements 'tags *db*)))
         (:div
+          (htm :br)
           (mapcar #'(lambda (row)
                       (htm
                         (:a :href (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
