@@ -51,15 +51,9 @@
          (database (select-links-with-summary (create-query-sequence summary) database)))
     (render-bookmarks database)))
 
-(defun format-time (str date-time)
-  (multiple-value-bind (sec minute hour date month year day daylight-p zone)
-    (decode-universal-time date-time)
-    (declare (ignore day daylight-p zone))
-    (format nil "~a ~4d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d" str year month date hour minute sec)))
-
 (defun render-bookmarks (database)
   (with-html-output-to-string
-    (*standard-output* nil :prologue t)
+    (*standard-output* nil :prologue t :indent t)
     (:html
       (:head (:title "Show all bookmarks"))
       (:body
@@ -91,7 +85,7 @@
   (let ((bookmark-id
           (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
     (with-html-output-to-string
-      (*standard-output* nil :prologue t)
+      (*standard-output* nil :prologue t :indent t)
         (:html
             (:head (:title "Bookmark details"))
             (:body
