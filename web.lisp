@@ -126,7 +126,7 @@
     (htm :br)
     (mapcar #'(lambda (row)
                 (htm
-                    (:a :href (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
+                    (:a :target "_blank" :href (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
                     :br
                     (:a :href (format nil "/bookmarks/~a" (id row)) "details")
                     (:div (fmt (format-time "Date added: "(date-added row))))
