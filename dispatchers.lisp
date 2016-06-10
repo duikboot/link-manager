@@ -6,9 +6,10 @@
        (create-regex-dispatcher "^/a/$" 'generate-index-page)
        (create-regex-dispatcher "^/bookmarks/$" 'bookmarks)
        (create-regex-dispatcher "^/bookmarks/add$" 'bookmark-form)
+       (create-regex-dispatcher "^/bookmarks/delete/[0-9]+" 'delete-bookmark)
        (create-regex-dispatcher "^/bookmarks/save" 'save-bookmark)
        (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
-       (create-regex-dispatcher "^/bookmarks/[0-9]+/edit$" 'edit-bookmark)))
+       (create-regex-dispatcher "^/bookmarks/edit/[0-9]+$" 'edit-bookmark)))
 
 (push (create-static-file-dispatcher-and-handler "/images/logo.png" "images/logo.png") *dispatch-table*)
 (push (create-static-file-dispatcher-and-handler "/style.css" "style/style.css") *dispatch-table*)

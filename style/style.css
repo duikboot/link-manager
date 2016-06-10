@@ -31,7 +31,7 @@
   height: auto;
 }
 
-/*================= header end ========================*/ 
+/*================= header end ========================*/
 
 /* selecting repos and tasks*/
 .align-thead th {
@@ -74,14 +74,14 @@ cursor: pointer;
 
 
 /* ======>  release note view page*/
-#hr-style { 
+#hr-style {
     display: block;
     margin-top: 1em;
     margin-bottom: 0em;
     margin-left: auto;
     border-style: ridge;
     border-width: 1px;
-} 
+}
 
 .release-note-container {
   background-color: white;
@@ -94,11 +94,15 @@ box-shadow: 0 0 16px 5px #C7C7C7;
 }
 
 .release-notes-column {
-  padding-right:20px; 
+  padding-right:20px;
   border-right: 1px solid #ccc;
 }
 
 .content-column {
+}
+
+.column-div {
+ padding: 10px;
 }
 
 .section-body {
@@ -131,7 +135,7 @@ box-shadow: 0 0 16px 5px #C7C7C7;
 
 /* (start) fetched content list*/
 /* content tabs */
-.cut-content {  
+.cut-content {
 text-decoration:line-through;
 color: #C1BDBD;
 }

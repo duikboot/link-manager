@@ -39,7 +39,7 @@
          (:h2 :style "text-align:center" ,title)
          (:br)
          ,@body)
-(footer)))))
+        (footer)))))
 
 ;; header procedure
 (defun header ()
@@ -54,7 +54,7 @@
           ;;(:a :class "navbar-brand" :href "#" "brand"))
         ; (:div :class "collapse navbar-collapse" :id "bs-example-navbar-collapse-1"
         ;   (:ul :class "nav navbar-nav navbar-right"))
-        (:a :href "/bookmarks/add" "Add bookmark")))))
+        (:a :class "navbar-brand" :href "/bookmarks/add" "Add bookmark")))))
 
  ;; footer content
 (defun footer ()
@@ -64,7 +64,7 @@
       (:a :href "https://twitter.com/u_boot" (:i :class "fa fa-twitter")))
     (:div :class "footer-left"
     (:a :href "/index" (:img  :class "logo" :src "/images/logo.png" ))
-(:p :style "color: black;" "Duikboot &copy; 2016")))))
+    (:p :style "color: black;" "Duikboot &copy; 2016")))))
 
 (defun index ()
   (redirect "/bookmarks/"))
@@ -95,55 +95,56 @@
     (make-link title link summary tags))
   (redirect "/bookmarks/"))
 
-(defun bookmark-form ()
-  (standard-page
-    (:title "Show bookmarks")
-    (:div :align "center"
-      (:form :method "post" :action "/bookmarks/save"
-             (:table
-               (:tr
-                 (:td "Title")
-                 (:td (:input :type "text" :name "title")))
-               (:tr
-                 (:td "Link")
-                 (:td (:input :type "text" :name "link")))
-               ( :tr
-                 (:td "summary")
-                 (:td (:textarea :name "summary" :rows 10 :cols 70)))
-               (:tr
-                 (:td "tags")
-                 (:td (:input :type "text" :name "tags" :size 80)))
-               (:tr
-                 (:td)
-                 (:td
-                   (:input :type "submit" :class "btn btn-primary" :value "Add"))))))))
+(defun bookmark-form (&key bookmark)
+    (standard-page
+      (:title "Add bookmark")
+      (:div :align "center"
+            (:form :method "post" :action "/bookmarks/save"
+                   (:div :class "form-group"
+                         (:label "Title")
+                         (:input :type "text" :name "title"))
+                   (:div :class "form-group"
+                         (:label "Link")
+                         (:input :type "text" :value nil :name "link"))
+                   (:div :class "form-group"
+                         (:label "summary")
+                         (:textarea :name "summary" :rows 10 :cols 70))
+                   (:div :class "form-group"
+                         (:label "tags")
+                         (:input :type "text" :name "tags" :size 80))
+                   (:div :class "form-group"
+                         (:input :type "submit" :class "btn btn-primary" :value "Add")))))
+  )
 
 (defun render-bookmarks (database)
   (standard-page
-    (:title "Show bookmarks")
+    (:title "Bookmarks")
     (:div (fmt "Tags: ~{ ~a ~}" (show-all-unique-elements 'tags *db*)))
-    (:div
+    (:div :class "container"
     (htm :br)
     (mapcar #'(lambda (row)
                 (htm
-                    (:a :target "_blank" :href (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
-                    :br
-                    (:a :href (format nil "/bookmarks/~a" (id row)) "details")
+                  (:div :class "col-md-6 col column-div"
+                    (:a :target "_blank" :href
+                        (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
+                    (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
+                    (:a :class "glyphicon glyphicon-remove" :href (format nil "/bookmarks/delete/~a" (id row)))
                     (:div (fmt (format-time "Date added: "(date-added row))))
                     (:div (fmt (format-time "Date modified: " (date-modified row))))
                     (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
-                    (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row)))
-                    :br)) database))))
+                    (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row))))
+                    )) database))))
+
+(defun delete-bookmark ()
+  (let ((bookmark-id
+          (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
+    (delete-link (parse-integer bookmark-id)))
+  (redirect "/"))
 
 (defun edit-bookmark ()
   (let ((bookmark-id
-          (first (reverse (split-sequence:split-sequence #\/ (request-uri*)))))))
-  (with-html-output-to-string
-    (*standard-output* nil :prologue t)
-    :html
-    (:head (:title "Bookmark details"))
-    (:body
-      (htm (:a :href "/row" "test")))))
+          (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
+    (bookmark-form :bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))))
 
 (defun get-bookmark ()
   (let ((bookmark-id
