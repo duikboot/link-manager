@@ -39,7 +39,6 @@
   (date-modified (get-universal-time))
   (read? nil))
 
-
 (defun add-record (link)
   "Push cd onto *db* stack"
   (push link *db*))
