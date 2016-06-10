@@ -10,6 +10,7 @@
   :serial t
   :components ((:file "package")
                (:file "macros")
+               (:file "dispatchers")
                (:file "utils")
                (:file "link-manager")
                (:file "web")))
