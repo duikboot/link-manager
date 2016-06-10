@@ -5,6 +5,7 @@
        (create-regex-dispatcher "^/$" 'index)
        (create-regex-dispatcher "^/a/$" 'generate-index-page)
        (create-regex-dispatcher "^/bookmarks/$" 'bookmarks)
+       (create-regex-dispatcher "^/bookmarks/add$" 'bookmark-form)
        (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
        (create-regex-dispatcher "^/bookmarks/[0-9]+/edit$" 'edit-bookmark)))
 
@@ -20,5 +21,3 @@
 (push (create-static-file-dispatcher-and-handler "/fonts/fontawesome-webfont.woff2" "font-awesome-4.6.3/fonts/fontawesome-webfont.woff2") *dispatch-table*)
 (push (create-static-file-dispatcher-and-handler "/fonts/fontawesome-webfont.woff " "font-awesome-4.6.3/fonts/fontawesome-webfont.woff") *dispatch-table*)
 (push (create-static-file-dispatcher-and-handler "/fonts/fontawesome-webfont.ttf" "font-awesome-4.6.3/fonts/fontawesome-webfont.ttf") *dispatch-table*)
-
-

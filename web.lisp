@@ -24,7 +24,7 @@
 (defmacro standard-page ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent t)
      (:html
-      (:head 
+      (:head
        (:meta :content "text/html" :charset "utf-8")
        (:meta :http-equiv "X-UA-Compatible" :content "IE=edge")
        (:meta :name "viewport" :content "width=device-width, initial-scale=1")
@@ -46,14 +46,15 @@
   (with-html-output (*standard-output* nil :indent t)
     (:nav :class "navbar navbar-default"
       (:div :class "container-fluid"
-        (:div :class "navbar-header"
-            (:span :class "sr-only" "Toggle navigation")
-            (:span :class "icon-bar")
-            (:span :class "icon-bar")
-            (:span :class "icon-bar"))
+        ; (:div :class "navbar-header"
+        ;     (:span :class "sr-only" "Toggle navigation")
+        ;     (:span :class "icon-bar")
+        ;     (:span :class "icon-bar")
+        ;     (:span :class "icon-bar"))
           ;;(:a :class "navbar-brand" :href "#" "brand"))
-        (:div :class "collapse navbar-collapse" :id "bs-example-navbar-collapse-1"
-          (:ul :class "nav navbar-nav navbar-right"))))))
+        ; (:div :class "collapse navbar-collapse" :id "bs-example-navbar-collapse-1"
+        ;   (:ul :class "nav navbar-nav navbar-right"))
+        (:a :href "/bookmarks/add" "Add bookmark")))))
 
  ;; footer content
 (defun footer ()
@@ -62,7 +63,7 @@
     (:div :class "footer-right"
       (:a :href "https://twitter.com/u_boot" (:i :class "fa fa-twitter")))
     (:div :class "footer-left"
-    (:a :href "/index" (:img  :class "logo" :src "/images/logo.png" )) 
+    (:a :href "/index" (:img  :class "logo" :src "/images/logo.png" ))
 (:p :style "color: black;" "Duikboot &copy; 2016")))))
 
 (defun index ()
@@ -74,7 +75,8 @@
         (html-template:fill-and-print-template #P"index.html" '(:page-title "test") :stream stream)))
 
 (defun create-query-sequence (sequence)
-  (if sequence (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence #\, sequence))) '()))
+  (if sequence
+    (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence #\, sequence))) '()))
 
 (defun bookmarks ()
   (let* ((order (get-order (get-parameter "order")))
@@ -87,6 +89,29 @@
          (database (select-links-with-tags (create-query-sequence tags) database))
          (database (select-links-with-summary (create-query-sequence summary) database)))
     (render-bookmarks database)))
+
+(defun bookmark-form ()
+  (standard-page
+    (:title "Show bookmarks")
+    (:div :align "center"
+      (:form :method "post"
+             (:table
+               (:tr
+                 (:td "Title")
+                 (:td (:input :type "text" :name "title")))
+               (:tr
+                 (:td "Link")
+                 (:td (:input :type "text" :name "link")))
+               ( :tr
+                 (:td "summary")
+                 (:td (:textarea :name "summary" :rows 10 :cols 70)))
+               (:tr
+                 (:td "tags")
+                 (:td (:input :type "text" :name "tags" :size 80)))
+               (:tr
+                 (:td)
+                 (:td
+                   (:input :type "submit" :class "btn btn-primary" :value "Add"))))))))
 
 (defun render-bookmarks (database)
   (standard-page
