@@ -6,6 +6,7 @@
        (create-regex-dispatcher "^/a/$" 'generate-index-page)
        (create-regex-dispatcher "^/bookmarks/$" 'bookmarks)
        (create-regex-dispatcher "^/bookmarks/add$" 'bookmark-form)
+       (create-regex-dispatcher "^/bookmarks/save" 'save-bookmark)
        (create-regex-dispatcher "^/bookmarks/[0-9]+$" 'get-bookmark)
        (create-regex-dispatcher "^/bookmarks/[0-9]+/edit$" 'edit-bookmark)))
 

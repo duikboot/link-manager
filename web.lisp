@@ -74,10 +74,6 @@
       (with-output-to-string (stream)
         (html-template:fill-and-print-template #P"index.html" '(:page-title "test") :stream stream)))
 
-(defun create-query-sequence (sequence)
-  (if sequence
-    (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence #\, sequence))) '()))
-
 (defun bookmarks ()
   (let* ((order (get-order (get-parameter "order")))
          (key (or
@@ -86,15 +82,24 @@
          (tags (or (get-parameter "tags") '()))
          (summary (or (get-parameter "summary") '()))
          (database (stable-sort (copy-list *db*) order :key key))
-         (database (select-links-with-tags (create-query-sequence tags) database))
-         (database (select-links-with-summary (create-query-sequence summary) database)))
+         (database (select-links-with-tags (create-query-sequence tags #\,) database))
+         (database (select-links-with-summary (create-query-sequence summary #\,) database)))
     (render-bookmarks database)))
+
+(defun save-bookmark ()
+  (let
+    ((title (create-query-sequence (post-parameter "title") #\space))
+     (link (post-parameter "link"))
+     (summary (create-query-sequence (post-parameter "summary") #\space))
+     (tags (create-query-sequence (post-parameter "tags") #\space)))
+    (make-link title link summary tags))
+  (redirect "/bookmarks/"))
 
 (defun bookmark-form ()
   (standard-page
     (:title "Show bookmarks")
     (:div :align "center"
-      (:form :method "post"
+      (:form :method "post" :action "/bookmarks/save"
              (:table
                (:tr
                  (:td "Title")

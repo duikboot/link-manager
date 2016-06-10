@@ -43,6 +43,7 @@
   "Push cd onto *db* stack"
   (push link *db*))
 
+
 (defun make-link (title link summary tags &optional read?)
   "Create structure for link"
   (add-record

@@ -19,3 +19,7 @@
     (decode-universal-time date-time)
     (declare (ignore day daylight-p zone))
     (format nil "~a ~4d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d" str year month date hour minute sec)))
+
+(defun create-query-sequence (sequence char)
+  (if sequence
+    (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence char sequence))) '()))
