@@ -116,9 +116,9 @@
                                  (if link link nil) :name "link"))
                    (:div :class "form-group"
                          (:label "summary")
-                         (format t "<textarea name=\"summary\" rows: \"10\" cols: \"10\">")
+                         (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
                          (if summary (format t "~{~(~a ~)~}" summary))
-                         (format t "</textarea"))
+                         (format t "</textarea>"))
                    (:div :class "form-group"
                          (:label "tags")
                          (:input :type "text" :value
