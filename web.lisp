@@ -88,33 +88,43 @@
 
 (defun save-bookmark ()
   (let
-    ((title (create-query-sequence (post-parameter "title") #\space))
+    (
+     (id (parse-integer (post-parameter "id")))
+     (title (create-query-sequence (post-parameter "title") #\space))
      (link (post-parameter "link"))
      (summary (create-query-sequence (post-parameter "summary") #\space))
      (tags (create-query-sequence (post-parameter "tags") #\space)))
-    (make-link title link summary tags))
+    (if (not (= id 0))
+      (update :fn (where 'id id) :title title :link link
+                   :summary summary :tags tags)
+      (make-link title link summary tags)))
   (redirect "/bookmarks/"))
 
-(defun bookmark-form (&key bookmark)
+(defun bookmark-form (&key id title link summary tags)
     (standard-page
       (:title "Add bookmark")
       (:div :align "center"
             (:form :method "post" :action "/bookmarks/save"
+                    (:input :type "hidden" :value (if id id 0) :name "id")
                    (:div :class "form-group"
                          (:label "Title")
-                         (:input :type "text" :name "title"))
+                         (:input :type "text" :value
+                                 (if title (format nil "~{~(~a ~)~}" title) nil) :name "title"))
                    (:div :class "form-group"
                          (:label "Link")
-                         (:input :type "text" :value nil :name "link"))
+                         (:input :type "text" :value
+                                 (if link link nil) :name "link"))
                    (:div :class "form-group"
                          (:label "summary")
-                         (:textarea :name "summary" :rows 10 :cols 70))
+                         (format t "<textarea name=\"summary\" rows: \"10\" cols: \"10\">")
+                         (if summary (format t "~{~(~a ~)~}" summary))
+                         (format t "</textarea"))
                    (:div :class "form-group"
                          (:label "tags")
-                         (:input :type "text" :name "tags" :size 80))
+                         (:input :type "text" :value
+                                 (if tags (format nil "~{~(~a ~)~}" tags) nil) :name "tags" :size 80))
                    (:div :class "form-group"
-                         (:input :type "submit" :class "btn btn-primary" :value "Add")))))
-  )
+                         (:input :type "submit" :class "btn btn-primary" :value "Save"))))))
 
 (defun render-bookmarks (database)
   (standard-page
@@ -142,9 +152,15 @@
   (redirect "/"))
 
 (defun edit-bookmark ()
-  (let ((bookmark-id
-          (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
-    (bookmark-form :bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))))
+  (let* ((bookmark-id
+          (first (reverse (split-sequence:split-sequence #\/ (request-uri*)))))
+         (bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))
+         (id (id bookmark))
+         (title (title bookmark))
+         (link (link bookmark))
+         (summary (summary bookmark))
+         (tags (tags bookmark)))
+    (bookmark-form :id id :title title :link link :summary summary :tags tags)))
 
 (defun get-bookmark ()
   (let ((bookmark-id
