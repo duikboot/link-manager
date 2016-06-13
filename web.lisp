@@ -88,12 +88,11 @@
 
 (defun save-bookmark ()
   (let
-    (
-     (id (parse-integer (post-parameter "id")))
-     (title (create-query-sequence (post-parameter "title") #\space))
-     (link (post-parameter "link"))
-     (summary (create-query-sequence (post-parameter "summary") #\space))
-     (tags (create-query-sequence (post-parameter "tags") #\space)))
+    ((id (parse-integer (post-parameter "id")))
+     (title (create-query-sequence (string-trim '(#\space) (post-parameter "title")) #\space))
+     (link (string-trim '(#\space) (post-parameter "link")))
+     (summary (create-query-sequence (string-trim '(#\space) (post-parameter "summary")) #\space))
+     (tags (create-query-sequence (string-trim '(#\space) (post-parameter "tags")) #\space)))
     (if (not (= id 0))
       (update :fn (where 'id id) :title title :link link
                    :summary summary :tags tags)
@@ -109,7 +108,7 @@
                    (:div :class "form-group"
                          (:label "Title")
                          (:input :type "text" :value
-                                 (if title (format nil "~{~(~a ~)~}" title) nil) :name "title"))
+                                 (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title"))
                    (:div :class "form-group"
                          (:label "Link")
                          (:input :type "text" :value
@@ -117,20 +116,20 @@
                    (:div :class "form-group"
                          (:label "summary")
                          (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
-                         (if summary (format t "~{~(~a ~)~}" summary))
+                         (if summary (format t "~{~(~a~^ ~)~}" summary))
                          (format t "</textarea>"))
                    (:div :class "form-group"
                          (:label "tags")
                          (:input :type "text" :value
-                                 (if tags (format nil "~{~(~a ~)~}" tags) nil) :name "tags" :size 80))
+                                 (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80))
                    (:div :class "form-group"
                          (:input :type "submit" :class "btn btn-primary" :value "Save"))))))
 
 (defun render-bookmarks (database)
   (standard-page
     (:title "Bookmarks")
-    (:div (fmt "Tags: ~{ ~a ~}" (show-all-unique-elements 'tags *db*)))
     (:div :class "container"
+    (:div (fmt "Tags: ~{ ~a ~}" (show-all-unique-elements 'tags *db*)))
     (htm :br)
     (mapcar #'(lambda (row)
                 (htm
