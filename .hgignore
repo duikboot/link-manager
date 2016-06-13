@@ -1,3 +1,4 @@
 linkmanager
 link-manager.fasl
 tags
+.idea/*
