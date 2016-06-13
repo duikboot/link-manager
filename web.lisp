@@ -1,8 +1,6 @@
 
 (in-package :link-manager)
 
-(setf html-template:*default-template-pathname* #P"templates/")
-
 (defun start-server ()
   (if *web-acceptor*
     (format t "~%Webserver already started~%")
@@ -68,11 +66,6 @@
 
 (defun index ()
   (redirect "/bookmarks/"))
-
-(defun generate-index-page ()
-  "Generate the index page showing all the blog posts."
-      (with-output-to-string (stream)
-        (html-template:fill-and-print-template #P"index.html" '(:page-title "test") :stream stream)))
 
 (defun bookmarks ()
   (let* ((order (get-order (get-parameter "order")))
