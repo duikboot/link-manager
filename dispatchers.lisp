@@ -3,7 +3,6 @@
 (setq *dispatch-table*
       (list
        (create-regex-dispatcher "^/$" 'index)
-       (create-regex-dispatcher "^/a/$" 'generate-index-page)
        (create-regex-dispatcher "^/bookmarks/$" 'bookmarks)
        (create-regex-dispatcher "^/bookmarks/add$" 'bookmark-form)
        (create-regex-dispatcher "^/bookmarks/delete/[0-9]+" 'delete-bookmark)
