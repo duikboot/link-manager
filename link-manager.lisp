@@ -75,7 +75,11 @@
                                                      (remove-if-not fn *db*))))
 
 (defun select-by-id (id)
-     (first (select :fn (where 'id id))))
+  (first (select :fn (where 'id id))))
+
+(defun search-bookmarks (items database)
+  ()
+  )
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
