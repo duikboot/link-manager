@@ -53,8 +53,7 @@
         ; (:div :class "collapse navbar-collapse" :id "bs-example-navbar-collapse-1"
         (:ul :class "nav navbar-nav navbar-right"
         (:form :method "get" :class "navbar-form navbar-left"
-               (:input :type "text" :name "search" :class "form-control" :placeholder "Search bookmarks..."))
-             )
+               (:input :type "text" :name "search" :class "form-control" :placeholder "Search bookmarks...")))
         (:a :class "navbar-brand" :href "/bookmarks/add" "Add bookmark"))))))
 
  ;; footer content

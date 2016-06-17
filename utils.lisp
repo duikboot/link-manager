@@ -23,3 +23,7 @@
 (defun create-query-sequence (sequence char)
   (when sequence
     (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence char sequence)))))
+
+(defun number-of-occurrences(item database)
+
+   )

@@ -110,8 +110,8 @@
 ;; (sort *db* '< :key 'date-added)
 
 (defun load-database (filename)
-  (with-open-file (in filename
-                      :if-does-not-exist nil)
+  "Load database file."
+  (with-open-file (in filename :if-does-not-exist nil)
     (when in
       (with-standard-io-syntax
         (setf *highest-id* (read in))
