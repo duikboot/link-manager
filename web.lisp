@@ -120,25 +120,31 @@
                    (:div :class "form-group"
                          (:input :type "submit" :class "btn btn-primary" :value "Save"))))))
 
+
+(defun render-tags (tags)
+  (with-html-output (*standard-output* nil :indent t)
+                    (htm
+                      (:div :class "row"
+                            (:div (fmt "Tags: ~{ ~a ~}" tags))))))
+
 (defun render-bookmarks (database)
   (standard-page
     (:title "Bookmarks")
     (:div :class "container"
-    (:div (fmt "Tags: ~{ ~a ~}" (show-all-unique-elements 'tags *db*)))
-    (htm :br)
-    (mapcar #'(lambda (row)
-                (htm
-                  (:div :class "col-md-6 col column-div"
-                    (:a :target "_blank" :href
-                        (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
-                    (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
-                    (:a :class "glyphicon glyphicon-remove" :href (format nil "/bookmarks/delete/~a" (id row)))
-                    (:div (fmt (format-time "Date added: "(date-added row))))
-                    (:div (fmt (format-time "Date modified: " (date-modified row))))
-                    (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
-                    (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row))))
-                    )) database))))
-
+      (render-tags (number-of-occurrences 'tags database))
+      (htm :br)
+      (mapcar #'(lambda (row)
+                  (htm
+                    (:div :class "col-md-6 col column-div"
+                      (:a :target "_blank" :href
+                          (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
+                      (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
+                      (:a :class "glyphicon glyphicon-remove" :href (format nil "/bookmarks/delete/~a" (id row)))
+                      (:div (fmt (format-time "Date added: "(date-added row))))
+                      (:div (fmt (format-time "Date modified: " (date-modified row))))
+                      (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
+                      (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row))))
+                      )) database))))
 (defun delete-bookmark ()
   (let ((bookmark-id
           (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))

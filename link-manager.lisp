@@ -88,10 +88,7 @@
 ; * (show-all-unique-elements #'summary *db*)
 ; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
 
-(defun show-all-unique-elements (fn database)
-  "Make a list of all unique tags.
-  (show-all-unique-elements 'tags *db*)"
-  (remove-duplicates (flatten (mapcar fn database))))
+
 
 (defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
   "(update :fn (where 'id 1) :tags '(python programming homepage tutorial))"

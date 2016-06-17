@@ -24,6 +24,16 @@
   (when sequence
     (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence char sequence)))))
 
-(defun number-of-occurrences(item database)
+(defun show-all-unique-elements (fn database)
+  "Make a list of all unique tags.
+  (show-all-unique-elements 'tags *db*)"
+  (remove-duplicates (flatten (mapcar fn database))))
 
-   )
+(defun number-of-occurrences (fn database)
+  (let ((elements (mapcar #'(lambda (x) (list x 0)) (show-all-unique-elements fn database)))
+        (items (flatten (mapcar fn database))))
+    (mapcar #'(lambda(x) (incf (second (assoc x elements))) ) items)
+    (sort elements  #'> :key #'second )))
+
+
+
