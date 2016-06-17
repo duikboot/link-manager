@@ -125,7 +125,12 @@
   (with-html-output (*standard-output* nil :indent t)
                     (htm
                       (:div :class "row"
-                            (:div (fmt "Tags: ~{ ~a ~}" tags))))))
+                            (:div :class "col-md-12"
+                                  (:div :class "tags-list well"
+                                        (:div (fmt "Tags: ~{ ~a ~}" tags))
+                                        )
+                                  )
+                            ))))
 
 (defun render-bookmarks (database)
   (standard-page
@@ -145,7 +150,9 @@
                       (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
                       (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row))))
                       )) database))))
+
 (defun delete-bookmark ()
+  "Delet bookmark"
   (let ((bookmark-id
           (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
     (delete-link (parse-integer bookmark-id)))
