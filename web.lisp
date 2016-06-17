@@ -122,15 +122,19 @@
 
 
 (defun render-tags (tags)
-  (with-html-output (*standard-output* nil :indent t)
-                    (htm
-                      (:div :class "row"
-                            (:div :class "col-md-12"
-                                  (:div :class "tags-list well"
-                                        (:div (fmt "Tags: ~{ ~a ~}" tags))
-                                        )
-                                  )
-                            ))))
+  (with-html-output
+    (*standard-output* nil :indent t)
+    (htm
+      (:div :class "row"
+            (:div
+              :class "col-md-12"
+              (:div
+                :class "tags-list well"
+                (mapcar #'(lambda (tag)
+                            (htm
+                              (:a
+                                :class "btn btn-primary" :role "button"
+                                :href "#" (format t "~{ ~a ~}" tag)))) tags)))))))
 
 (defun render-bookmarks (database)
   (standard-page
@@ -140,7 +144,7 @@
       (htm :br)
       (mapcar #'(lambda (row)
                   (htm
-                    (:div :class "col-md-6 col column-div"
+                    (:div :class "col-md-4 col column-div"
                       (:a :target "_blank" :href
                           (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
                       (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
