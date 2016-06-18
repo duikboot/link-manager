@@ -45,15 +45,12 @@
     (:nav :class "navbar navbar-default"
       (:div :class "container-fluid"
         (:div :class "navbar-header"
-        ;     (:span :class "sr-only" "Toggle navigation")
-        ;     (:span :class "icon-bar")
-        ;     (:span :class "icon-bar")
-        ;     (:span :class "icon-bar"))
-          ;;(:a :class "navbar-brand" :href "#" "brand"))
-        ; (:div :class "collapse navbar-collapse" :id "bs-example-navbar-collapse-1"
         (:ul :class "nav navbar-nav navbar-right"
         (:form :method "get" :class "navbar-form navbar-left"
-               (:input :type "text" :name "search" :class "form-control" :placeholder "Search bookmarks...")))
+               (:input :type "text"
+                       :name "search"
+                       :class "form-control"
+                       :placeholder "Search bookmarks...")))
         (:a :class "navbar-brand" :href "/bookmarks/add" "Add bookmark"))))))
 
  ;; footer content
@@ -92,6 +89,7 @@
       (update :fn (where 'id id) :title title :link link
                    :summary summary :tags tags)
       (make-link title link summary tags)))
+  (save)
   (redirect "/bookmarks/"))
 
 (defun bookmark-form (&key id title link summary tags)
@@ -118,6 +116,7 @@
                          (:input :type "text" :value
                                  (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80))
                    (:div :class "form-group"
+                   (:a :href "/bookmarks/" "Cancel")
                          (:input :type "submit" :class "btn btn-primary" :value "Save"))))))
 
 
@@ -133,7 +132,7 @@
                 (mapcar #'(lambda (tag)
                             (htm
                               (:a
-                                :class "btn btn-primary" :role "button"
+                                :class "btn btn-primary btn-xs" :role "button"
                                 :href "#" (format t "~{ ~a ~}" tag)))) tags)))))))
 
 (defun render-bookmarks (database)
@@ -152,7 +151,7 @@
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
-                      (:div (fmt "Tags: ~{ ~(~a~) ~}" (tags row))))
+                      (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))
                       )) database))))
 
 (defun delete-bookmark ()

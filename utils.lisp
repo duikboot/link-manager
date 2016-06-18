@@ -8,11 +8,14 @@
 (defun p (o)
   (format *log* "~a~%" o) o)
 
+; (defun flatten (l)
+;   "Flatten list."
+;   (cond ((null l) nil)
+;         ((atom (first l)) (cons (first l) (flatten (rest l))))
+;         (t (append (flatten (first l)) (flatten (rest l))))))
+
 (defun flatten (l)
-  "Flatten list."
-  (cond ((null l) nil)
-        ((atom (first l)) (cons (first l) (flatten (rest l))))
-        (t (append (flatten (first l)) (flatten (rest l))))))
+  (apply #'append l))
 
 (defun format-time (str date-time)
   (multiple-value-bind (sec minute hour date month year day daylight-p zone)
