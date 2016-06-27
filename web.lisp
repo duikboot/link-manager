@@ -18,6 +18,9 @@
 (defun get-order (x)
   (if (equalp "desc" x) #'> #'<))
 
+(defun truncate-string (str len)
+  (if (> (length str) len) (subseq str 0 len) str))
+
 ;standard page for all the html pages
 (defmacro standard-page ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent t)
@@ -152,7 +155,7 @@
                       ; (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
-                      (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
+                      (:div (fmt "Summary: ~{ ~(~a~) ~}" (truncate-string (summary row) 15)))
                       (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))
                       )) database))))
 
