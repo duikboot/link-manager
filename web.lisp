@@ -148,6 +148,8 @@
                           (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
                       (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
                       (:a :class "glyphicon glyphicon-remove" :href (format nil "/bookmarks/delete/~a" (id row)))
+                      ; try make link for delete and make it cancable.
+                      ; (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
