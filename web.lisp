@@ -111,7 +111,7 @@
                          (:input :type "url" :id "bf_link" :tabindex "2" :value
                                  (if link link nil) :name "link"))
                    (:div :class "form-group"
-                         (:label :for "bf_sum" Summary")
+                         (:label :for "bf_sum" "Summary")
                          (format t "<textarea name=\"summary\" tabindex=\"3\" rows=\"10\" cols=\"70\">")
                          (if summary (format t "~{~(~a~^ ~)~}" summary))
                          (format t "</textarea>"))
@@ -156,8 +156,8 @@
                       ; (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
-                      (:div (fmt "Summary: ~{ ~(~a~) ~}" (truncate-string (summary row) 15)))
-                      (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))
+                      (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))
+                      (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row))))
                       )) database))))
 
 (defun delete-bookmark ()
