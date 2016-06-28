@@ -33,6 +33,7 @@
        (:link :href "/style.css" :rel "stylesheet" :type "text/css")
        (:link :href "/bootstrap.css" :rel "stylesheet" :type "text/css")
        (:link :href "/font-awesome.css" :rel "stylesheet" :type "text/css")
+       (:script :src "/jquery.js" )
        (:script :src "/bootstrap-js.js" ))
       (:body
         (header)
@@ -102,25 +103,25 @@
             (:form :method "post" :action "/bookmarks/save"
                     (:input :type "hidden" :value (if id id 0) :name "id")
                    (:div :class "form-group"
-                         (:label "Title")
-                         (:input :type "text" :value
+                         (:label :for "bf_title" "Title")
+                         (:input :type "text" :id "bf_title" :tabindex "1" :value
                                  (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title"))
                    (:div :class "form-group"
-                         (:label "Link")
-                         (:input :type "text" :value
+                         (:label :for "bf_link" "Link")
+                         (:input :type "url" :id "bf_link" :tabindex "2" :value
                                  (if link link nil) :name "link"))
                    (:div :class "form-group"
-                         (:label "summary")
-                         (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
+                         (:label :for "bf_sum" Summary")
+                         (format t "<textarea name=\"summary\" tabindex=\"3\" rows=\"10\" cols=\"70\">")
                          (if summary (format t "~{~(~a~^ ~)~}" summary))
                          (format t "</textarea>"))
                    (:div :class "form-group"
-                         (:label "tags")
-                         (:input :type "text" :value
+                         (:label :for "bf_tags" "Tags")
+                         (:input :type "text" :id "bf_tags" :tabindex "4" :value
                                  (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80))
                    (:div :class "form-group"
-                   (:a :href "/bookmarks/" "Cancel")
-                         (:input :type "submit" :class "btn btn-primary" :value "Save"))))))
+                   (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")
+                         (:input :type "submit" :tabindex "5" :class "btn btn-primary" :value "Save"))))))
 
 
 (defun render-tags (tags)
