@@ -77,9 +77,10 @@
 (defun select-by-id (id)
   (first (select :fn (where 'id id))))
 
-(defun search-bookmarks (items database)
-  ()
-  )
+; (defun search-bookmarks (items database)
+;   (cond ((null items) database)
+;         (()))
+;   )
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
@@ -87,8 +88,6 @@
 ; * (show-all-unique-elements #'tags *db*)
 ; * (show-all-unique-elements #'summary *db*)
 ; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
-
-
 
 (defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
   "(update :fn (where 'id 1) :tags '(python programming homepage tutorial))"
