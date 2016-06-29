@@ -33,8 +33,8 @@
        (:link :href "/style.css" :rel "stylesheet" :type "text/css")
        (:link :href "/bootstrap.css" :rel "stylesheet" :type "text/css")
        (:link :href "/font-awesome.css" :rel "stylesheet" :type "text/css")
-       (:script :src "/jquery.js" )
-       (:script :src "/bootstrap-js.js" ))
+       (:script :src "/jquery.js")
+       (:script :src "/bootstrap-js.js"))
       (:body
         (header)
         (:div :style "min-height:450px"
