@@ -78,7 +78,9 @@
 
 (defun bookmarks ()
   (let* ((order (get-order (get-parameter "order")))
-         (key (or (intern (string-upcase (get-parameter "sort"))) 'date-added))
+         (key (or
+                (intern (string-upcase (get-parameter "sort")))
+                'date-added))
          (tags (or (get-parameter "tags") '()))
          (summary (or (get-parameter "summary") '()))
          (database (stable-sort (copy-list *db*) order :key key))

@@ -66,6 +66,14 @@
      (select-links-with-summary (rest summary-list) (select-in summary summary-list database)))
     (t database)))
 
+(defun select-links-with-title (title-list database)
+  "Select all the bookmarks with title"
+  (cond
+    ((equal (length title-list) 1) (select-in title title-list database))
+    ((> (length title-list) 1)
+     (select-links-with-title (rest title-list) (select-in title title-list database)))
+    (t database)))
+
 ; (select (where 'read? nil) :summary '(lisp))
 ; (select  :fn (where 'read? nil))
 (defun select (&key (fn #'(lambda (x) x)) tags summary)
@@ -77,10 +85,14 @@
 (defun select-by-id (id)
   (first (select :fn (where 'id id))))
 
-; (defun search-bookmarks (items database)
-;   (cond ((null items) database)
-;         (()))
-;   )
+(defun search-bookmarks (items database)
+  (remove-duplicates
+    (concatenate 'list
+                 (select-links-with-tags items database)
+                 (select-links-with-summary items database)
+                 (select-links-with-title items database))
+    )
+  )
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
