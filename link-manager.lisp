@@ -90,9 +90,7 @@
     (concatenate 'list
                  (select-links-with-tags items database)
                  (select-links-with-summary items database)
-                 (select-links-with-title items database))
-    )
-  )
+                 (select-links-with-title items database))))
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
