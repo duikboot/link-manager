@@ -84,11 +84,12 @@
          (tags (or (get-parameter "tags") '()))
          (summary (or (get-parameter "summary") '()))
          (database (stable-sort (copy-list *db*) order :key key))
+         (search-params (or (get-parameter "search") '()))
          (database (select-links-with-tags (create-query-sequence tags #\,) database))
          (database (select-links-with-summary (create-query-sequence summary #\,) database))
+         (database (search-bookmarks (create-query-sequence search-params #\space) database))
          ; (parameters (get-parameters*))
          )
-    ; (princ (assoc 'search parameters))
     (render-bookmarks database)))
 
 (defun save-bookmark ()
