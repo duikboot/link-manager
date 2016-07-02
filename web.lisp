@@ -95,10 +95,13 @@
 (defun save-bookmark ()
   (let
     ((id (parse-integer (post-parameter "id")))
-     (title (create-query-sequence (string-trim '(#\space) (post-parameter "title")) #\space))
+     (title (create-query-sequence
+              (string-trim '(#\space) (post-parameter "title")) #\space))
      (link (string-trim '(#\space) (post-parameter "link")))
-     (summary (create-query-sequence (string-trim '(#\space) (post-parameter "summary")) #\space))
-     (tags (create-query-sequence (string-trim '(#\space) (post-parameter "tags")) #\space)))
+     (summary (create-query-sequence
+                (string-trim '(#\space) (post-parameter "summary")) #\space))
+     (tags (create-query-sequence
+             (string-trim '(#\space) (post-parameter "tags")) #\space)))
     (if (not (= id 0))
       (update :fn (where 'id id) :title title :link link
                    :summary summary :tags tags)

@@ -18,7 +18,9 @@
 (defparameter *database* "test.db")
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
-(defparameter *haystacks* '(title summary tags))
+
+(defparameter *haystacks* '(title summary tags)
+  "These are the items you can search in")
 
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
@@ -86,15 +88,16 @@
 (defun select-by-id (id)
   (first (select :fn (where 'id id))))
 
-;  or (find 'python (summary (first *db*))) (find 'python (tags (first *db*)))
-(defun search-bookmarks (items database)
-  (if items
-    (remove-duplicates
-      (concatenate 'list
-                   (select-in tags items database)
-                   (select-in summary items database)
-                   (select-in title items database)))
-    database))
+; ;  or (find 'python (summary (first *db*))) (find 'python (tags (first *db*)))
+; (defun search-bookmarks (items database)
+;   (if items
+;     (remove-duplicates
+;       (concatenate 'list
+;                    (mapcar #'(lambda (x)
+;                                (select-in x items database)) *haystacks*)))
+;     database))
+
+;  (or (find 'python (summary (first *db*))) (find 'python (tags (first *db*))))
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))

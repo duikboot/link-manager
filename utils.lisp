@@ -38,5 +38,18 @@
     (mapcar #'(lambda(x) (incf (second (assoc x elements))) ) items)
     (sort elements  #'> :key #'second )))
 
+(defun search-in-record (item record)
+    (or (member item (title record))(member item (summary record)) (find item (tags record))))
 
+(defun search-in-record (item record)
+    (or (mapcar #'(lambda (x) (find item (funcall x record))) *haystacks*)))
 
+(defun items-in-record-p (items record)
+  (and (mapcar #'(lambda (x) (search-in-record x record)) items)))
+
+(defun search-bookmarks (items database)
+  (if items
+    (cond
+      ((items-in-record-p items (first database) (cons (first database)(search-bookmarks items (rest database)))))
+      (t (search-bookmarks items (rest database)))))
+  database)
