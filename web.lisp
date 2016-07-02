@@ -52,18 +52,18 @@
 ;; header procedure
 (defun header ()
   (with-html-output (*standard-output* nil :indent t)
-    (:nav :class "navbar navbar-default navbar-fixed-top"
+    (:nav :class "navbar navbar-inverse navbar-fixed-top"
       (:div :class "container-fluid"
         (:div :class "navbar-header"
-        (:ul :class "nav navbar-nav navbar-right"
-        (:form :method "get" :class "navbar-form navbar-left"
-               (:input :type "text"
-                       :name "search"
-                       :class "form-control"
-                       :placeholder "Search bookmarks...")))
-        (:a :class "navbar-brand" :href "/"
+          (:a :class "navbar-brand" :href "/"
             (:i :class "glyphicon glyphicon-home"))
-        (:a :class "navbar-brand" :href "/bookmarks/add" "Add bookmark"))))))
+          (:ul :class "nav navbar-nav"
+            (:li
+                (:a :href "/bookmarks/add" "Add bookmark")))
+          (:form :method "get" :class "navbar-form navbar-left" :role "search"
+            (:div :class "form-group"
+              (:input :type "text" :name "search"
+                      :class "form-control" :placeholder "Search bookmarks..."))))))))
 
  ;; footer content
 (defun footer ()
@@ -114,28 +114,32 @@
                    (:div :class "form-group"
                          (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
                          (:div :class "col-sm-10"
-                             (:input :type "text" :id "bf_title" :tabindex "1" :class "form-control" :value
+                             (:input :type "text" :id "bf_title" :placeholder "Bookmark title"
+                                :tabindex "1" :class "form-control" :value
                                  (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title")))
                    (:div :class "form-group"
                          (:label :for "bf_link" :class "col-sm-2 control-label" "Link")
                          (:div :class "col-sm-10"
-                             (:input :type "url" :id "bf_link" :tabindex "2" :class "form-control" :value
+                             (:input :type "url" :id "bf_link" :placeholder "https://www.site.com"
+                                :tabindex "2" :class "form-control" :value
                                  (if link link nil) :name "link")))
                    (:div :class "form-group"
                          (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
                          (:div :class "col-sm-10"
-                            (format t "<textarea name=\"summary\" tabindex=\"3\" class=\"form-control\"  rows=\"10\" cols=\"70\">")
+                            (format t "<textarea name=\"summary\" placeholder=\"Descriptive summary of site contents\"
+                                tabindex=\"3\" class=\"form-control\"  rows=\"10\" cols=\"70\">")
                             (if summary (format t "~{~(~a~^ ~)~}" summary))
                             (format t "</textarea>")))
                    (:div :class "form-group"
                          (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
                          (:div :class "col-sm-10"
-                             (:input :type "text" :id "bf_tags" :tabindex "4" :class "form-control" :value
+                             (:input :type "text" :id "bf_tags" :placeholder "comma, separated, words"
+                                :tabindex "4" :class "form-control" :value
                                  (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
                    (:div :class "form-group"
                         (:div :class "col-sm-offset-2 col-sm-10"
-                            (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")
-                            (:input :type "submit" :tabindex "5" :class "btn btn-primary" :value "Save")))))))
+                            (:button :type "submit" :tabindex "5" :class "btn btn-primary" "Save")
+                            (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")))))))
 
 
 (defun render-tags (tags)
