@@ -93,7 +93,7 @@
       (concatenate 'list
                    (select-in tags items database)
                    (select-in summary items database)
-                   (select-in title items database))) 
+                   (select-in title items database)))
     database))
 
 (defun delete-link (id)
