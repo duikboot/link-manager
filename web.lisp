@@ -39,7 +39,8 @@
        (:link :href "/style.css" :rel "stylesheet" :type "text/css")
        (:link :href "/bootstrap.css" :rel "stylesheet" :type "text/css")
        (:link :href "/font-awesome.css" :rel "stylesheet" :type "text/css")
-       (:script :src "/bootstrap-js.js" ))
+       (:script :src "/jquery.js")
+       (:script :src "/bootstrap-js.js"))
       (:body
         (header)
         (:div :style "min-height:450px"
@@ -51,7 +52,7 @@
 ;; header procedure
 (defun header ()
   (with-html-output (*standard-output* nil :indent t)
-    (:nav :class "navbar navbar-default"
+    (:nav :class "navbar navbar-default navbar-fixed-top"
       (:div :class "container-fluid"
         (:div :class "navbar-header"
         (:ul :class "nav navbar-nav navbar-right"
@@ -60,6 +61,8 @@
                        :name "search"
                        :class "form-control"
                        :placeholder "Search bookmarks...")))
+        (:a :class "navbar-brand" :href "/"
+            (:i :class "glyphicon glyphicon-home"))
         (:a :class "navbar-brand" :href "/bookmarks/add" "Add bookmark"))))))
 
  ;; footer content
@@ -105,29 +108,34 @@
 (defun bookmark-form (&key id title link summary tags)
     (standard-page
       (:title "Add bookmark")
-      (:div :align "center"
-            (:form :method "post" :action "/bookmarks/save"
-                    (:input :type "hidden" :value (if id id 0) :name "id")
+      (:div :style "margin: 0 auto; width: 90%"
+            (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
+                   (:input :type "hidden" :value (if id id 0) :name "id")
                    (:div :class "form-group"
-                         (:label "Title")
-                         (:input :type "text" :value
-                                 (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title"))
+                         (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
+                         (:div :class "col-sm-10"
+                             (:input :type "text" :id "bf_title" :tabindex "1" :class "form-control" :value
+                                 (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title")))
                    (:div :class "form-group"
-                         (:label "Link")
-                         (:input :type "text" :value
-                                 (if link link nil) :name "link"))
+                         (:label :for "bf_link" :class "col-sm-2 control-label" "Link")
+                         (:div :class "col-sm-10"
+                             (:input :type "url" :id "bf_link" :tabindex "2" :class "form-control" :value
+                                 (if link link nil) :name "link")))
                    (:div :class "form-group"
-                         (:label "summary")
-                         (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
-                         (if summary (format t "~{~(~a~^ ~)~}" summary))
-                         (format t "</textarea>"))
+                         (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
+                         (:div :class "col-sm-10"
+                            (format t "<textarea name=\"summary\" tabindex=\"3\" class=\"form-control\"  rows=\"10\" cols=\"70\">")
+                            (if summary (format t "~{~(~a~^ ~)~}" summary))
+                            (format t "</textarea>")))
                    (:div :class "form-group"
-                         (:label "tags")
-                         (:input :type "text" :value
-                                 (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80))
+                         (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
+                         (:div :class "col-sm-10"
+                             (:input :type "text" :id "bf_tags" :tabindex "4" :class "form-control" :value
+                                 (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
                    (:div :class "form-group"
-                   (:a :href "/bookmarks/" "Cancel")
-                         (:input :type "submit" :class "btn btn-primary" :value "Save"))))))
+                        (:div :class "col-sm-offset-2 col-sm-10"
+                            (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")
+                            (:input :type "submit" :tabindex "5" :class "btn btn-primary" :value "Save")))))))
 
 
 (defun render-tags (tags)
