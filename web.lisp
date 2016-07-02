@@ -46,7 +46,7 @@
 ;; header procedure
 (defun header ()
   (with-html-output (*standard-output* nil :indent t)
-    (:nav :class "navbar navbar-default"
+    (:nav :class "navbar navbar-default navbar-fixed-top"
       (:div :class "container-fluid"
         (:div :class "navbar-header"
         (:ul :class "nav navbar-nav navbar-right"

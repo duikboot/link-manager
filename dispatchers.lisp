@@ -21,6 +21,8 @@
       *dispatch-table*) (push (create-static-file-dispatcher-and-handler
                                 "/bootstrap.css" "bootstrap/css/bootstrap.css")
       *dispatch-table*) (push (create-static-file-dispatcher-and-handler
+                                "/bootstrap-theme.css" "bootstrap/css/bootstrap-papertheme-min.css")
+      *dispatch-table*) (push (create-static-file-dispatcher-and-handler
                                 "/jquery.js" "bootstrap/js/jquery-2.2.4.js")
       *dispatch-table*) (push (create-static-file-dispatcher-and-handler
                                 "/bootstrap-js.js" "bootstrap/js/bootstrap.js")
