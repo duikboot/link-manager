@@ -99,29 +99,34 @@
 (defun bookmark-form (&key id title link summary tags)
     (standard-page
       (:title "Add bookmark")
-      (:div :align "center"
-            (:form :method "post" :action "/bookmarks/save"
-                    (:input :type "hidden" :value (if id id 0) :name "id")
+      (:div :style "margin: 0 auto; width: 90%"
+            (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
+                   (:input :type "hidden" :value (if id id 0) :name "id")
                    (:div :class "form-group"
-                         (:label :for "bf_title" "Title")
-                         (:input :type "text" :id "bf_title" :tabindex "1" :value
-                                 (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title"))
+                         (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
+                         (:div :class "col-sm-10"
+                             (:input :type "text" :id "bf_title" :tabindex "1" :class "form-control" :value
+                                 (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title")))
                    (:div :class "form-group"
-                         (:label :for "bf_link" "Link")
-                         (:input :type "url" :id "bf_link" :tabindex "2" :value
-                                 (if link link nil) :name "link"))
+                         (:label :for "bf_link" :class "col-sm-2 control-label" "Link")
+                         (:div :class "col-sm-10"
+                             (:input :type "url" :id "bf_link" :tabindex "2" :class "form-control" :value
+                                 (if link link nil) :name "link")))
                    (:div :class "form-group"
-                         (:label :for "bf_sum" "Summary")
-                         (format t "<textarea name=\"summary\" tabindex=\"3\" rows=\"10\" cols=\"70\">")
-                         (if summary (format t "~{~(~a~^ ~)~}" summary))
-                         (format t "</textarea>"))
+                         (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
+                         (:div :class "col-sm-10"
+                            (format t "<textarea name=\"summary\" tabindex=\"3\" class=\"form-control\"  rows=\"10\" cols=\"70\">")
+                            (if summary (format t "~{~(~a~^ ~)~}" summary))
+                            (format t "</textarea>")))
                    (:div :class "form-group"
-                         (:label :for "bf_tags" "Tags")
-                         (:input :type "text" :id "bf_tags" :tabindex "4" :value
-                                 (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80))
+                         (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
+                         (:div :class "col-sm-10"
+                             (:input :type "text" :id "bf_tags" :tabindex "4" :class "form-control" :value
+                                 (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
                    (:div :class "form-group"
-                   (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")
-                         (:input :type "submit" :tabindex "5" :class "btn btn-primary" :value "Save"))))))
+                        (:div :class "col-sm-offset-2 col-sm-10"
+                            (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")
+                            (:input :type "submit" :tabindex "5" :class "btn btn-primary" :value "Save")))))))
 
 
 (defun render-tags (tags)
