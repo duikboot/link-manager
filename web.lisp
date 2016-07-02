@@ -21,6 +21,12 @@
 (defun truncate-string (str len)
   (if (> (length str) len) (subseq str 0 len) str))
 
+
+(defun truncate-string (str len)
+  (cond
+    ((<= (length str) len) str)
+    (t (concatenate 'list (subseq str 0 len) "..."))))
+
 ;standard page for all the html pages
 (defmacro standard-page ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent t)
@@ -74,14 +80,15 @@
 
 (defun bookmarks ()
   (let* ((order (get-order (get-parameter "order")))
-         (key (or
-                (intern (string-upcase (get-parameter "sort")))
-                'date-added))
+         (key (or (intern (string-upcase (get-parameter "sort"))) 'date-added))
          (tags (or (get-parameter "tags") '()))
          (summary (or (get-parameter "summary") '()))
          (database (stable-sort (copy-list *db*) order :key key))
          (database (select-links-with-tags (create-query-sequence tags #\,) database))
-         (database (select-links-with-summary (create-query-sequence summary #\,) database)))
+         (database (select-links-with-summary (create-query-sequence summary #\,) database))
+         ; (parameters (get-parameters*))
+         )
+    ; (princ (assoc 'search parameters))
     (render-bookmarks database)))
 
 (defun save-bookmark ()
