@@ -1,10 +1,4 @@
 /*================ header start =======================*/
-/*  #8DB2DE */
-/* #8099B7 */
-.navbar.navbar-default {
-    background-color: #8099B7;
-}
-
 #links a:hover  {
   color: #D0D0D0;
 }
@@ -103,10 +97,6 @@ box-shadow: 0 0 16px 5px #C7C7C7;
 
 .column-div {
  padding: 10px;
-}
-
-.btn-primary {
-  margin-top: 3px;
 }
 
 .section-body {
