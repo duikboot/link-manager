@@ -55,6 +55,8 @@
                        :name "search"
                        :class "form-control"
                        :placeholder "Search bookmarks...")))
+        (:a :class "navbar-brand" :href "/"
+            (:i :class "glyphicon glyphicon-home"))
         (:a :class "navbar-brand" :href "/bookmarks/add" "Add bookmark"))))))
 
  ;; footer content
