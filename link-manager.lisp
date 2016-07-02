@@ -18,6 +18,7 @@
 (defparameter *database* "test.db")
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
+(defparameter *haystacks* '(title summary tags))
 
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
@@ -88,9 +89,16 @@
 (defun search-bookmarks (items database)
   (remove-duplicates
     (concatenate 'list
-                 (select-links-with-tags items database)
-                 (select-links-with-summary items database)
-                 (select-links-with-title items database))))
+                 (select-in tags items database)
+                 (select-in summary items database)
+                 (select-in title items database))))
+; ;  or (find 'python (summary (first *db*))) (find 'python (tags (first *db*)))
+; (defun search-bookmarks (items database)
+;   (remove-duplicates
+;     (concatenate 'list
+;                  (select-links tags items database)
+;                  (select-links summary items database)
+;                  (select-links title items database))))
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))

@@ -17,3 +17,12 @@
   `(remove-if-not #'(lambda (link)
                       (find (first ,attribute) (,func link))) ,database))
 
+; (defmacro select-links (subject items database)
+;   "Select all the bookmarks with title"
+;   `(cond
+;     ((equal (length ,items) 1) (select-in ,subject ,items ,database))
+;     ((> (length ,items) 1)
+;      (select-links ,subject (rest ,items) (select-in ,subject ,items ,database)))
+;     (t ,database)))
+
+; (or (find 'python (summary (first *db*))) (find 'python (tags (first *db*))))
