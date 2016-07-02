@@ -31,7 +31,7 @@
        (:meta :name "viewport" :content "width=device-width, initial-scale=1")
        (:title ,title)
        (:link :href "/style.css" :rel "stylesheet" :type "text/css")
-       (:link :href "/bootstrap-android.css" :rel "stylesheet" :type "text/css")
+       (:link :href "/bootstrap.css" :rel "stylesheet" :type "text/css")
        (:link :href "/font-awesome.css" :rel "stylesheet" :type "text/css")
        (:script :src "/jquery.js")
        (:script :src "/bootstrap-js.js"))
