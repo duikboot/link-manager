@@ -86,19 +86,15 @@
 (defun select-by-id (id)
   (first (select :fn (where 'id id))))
 
+;  or (find 'python (summary (first *db*))) (find 'python (tags (first *db*)))
 (defun search-bookmarks (items database)
-  (remove-duplicates
-    (concatenate 'list
-                 (select-in tags items database)
-                 (select-in summary items database)
-                 (select-in title items database))))
-; ;  or (find 'python (summary (first *db*))) (find 'python (tags (first *db*)))
-; (defun search-bookmarks (items database)
-;   (remove-duplicates
-;     (concatenate 'list
-;                  (select-links tags items database)
-;                  (select-links summary items database)
-;                  (select-links title items database))))
+  (if items
+    (remove-duplicates
+      (concatenate 'list
+                   (select-in tags items database)
+                   (select-in summary items database)
+                   (select-in title items database))) 
+    database))
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
