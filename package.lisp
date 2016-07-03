@@ -2,6 +2,5 @@
 ;;; * (sb-ext:save-lisp-and-die "bookmarks" :executable t)
 
 
-
 (defpackage :link-manager
   (:use :cl :hunchentoot :cl-who))

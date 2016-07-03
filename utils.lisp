@@ -38,23 +38,11 @@
     (mapcar #'(lambda(x) (incf (second (assoc x elements))) ) items)
     (sort elements  #'> :key #'second )))
 
-; (defun item-in-record-p (item record)
-;     (not (member nil (mapcan #'(lambda (x) (find item (funcall x record))) *haystacks*))))
-
 (defun item-in-record-p (item record)
-    (remove nil (mapcar #'(lambda (x) (find item (funcall x record))) *haystacks*)) )
+    (remove nil (mapcar #'(lambda (x) (find item (funcall x record))) *haystacks*)))
 
 (defun items-in-record-p (items record)
-  (not (member nil (remove-duplicates (mapcar #'(lambda (x) (item-in-record-p x record)) items))))   )
-
-; (defun search-bookmarks (items database)
-;   (if items
-;     (if
-;       (items-in-record-p items (first database)
-;                          (list (first database) (search-bookmarks items (rest database))))
-;       (search-bookmarks items (rest database)))
-;     database)
-;   )
+  (not (member nil (remove-duplicates (mapcar #'(lambda (x) (item-in-record-p x record)) items)))))
 
 (defun search-bookmarks (items database)
   (let* ((result '())
