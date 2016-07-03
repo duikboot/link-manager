@@ -16,4 +16,3 @@
   "(remove-if-not #'(lambda (link) (member 'lisp (bookmark-tags link))) *db*)"
   `(remove-if-not #'(lambda (link)
                       (find (first ,attribute) (,func link))) ,database))
-

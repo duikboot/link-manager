@@ -19,6 +19,9 @@
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
 
+(defparameter *haystacks* '(title summary tags)
+  "These are the items you can search in")
+
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
 
@@ -66,6 +69,14 @@
      (select-links-with-summary (rest summary-list) (select-in summary summary-list database)))
     (t database)))
 
+(defun select-links-with-title (title-list database)
+  "Select all the bookmarks with title"
+  (cond
+    ((equal (length title-list) 1) (select-in title title-list database))
+    ((> (length title-list) 1)
+     (select-links-with-title (rest title-list) (select-in title title-list database)))
+    (t database)))
+
 ; (select (where 'read? nil) :summary '(lisp))
 ; (select  :fn (where 'read? nil))
 (defun select (&key (fn #'(lambda (x) x)) tags summary)
@@ -77,9 +88,16 @@
 (defun select-by-id (id)
   (first (select :fn (where 'id id))))
 
-(defun search-bookmarks (items database)
-  ()
-  )
+; ;  or (find 'python (summary (first *db*))) (find 'python (tags (first *db*)))
+; (defun search-bookmarks (items database)
+;   (if items
+;     (remove-duplicates
+;       (concatenate 'list
+;                    (mapcar #'(lambda (x)
+;                                (select-in x items database)) *haystacks*)))
+;     database))
+
+;  (or (find 'python (summary (first *db*))) (find 'python (tags (first *db*))))
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
@@ -87,8 +105,6 @@
 ; * (show-all-unique-elements #'tags *db*)
 ; * (show-all-unique-elements #'summary *db*)
 ; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
-
-
 
 (defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
   "(update :fn (where 'id 1) :tags '(python programming homepage tutorial))"

@@ -25,7 +25,7 @@
 
 (defun create-query-sequence (sequence char)
   (when sequence
-    (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence char sequence)))))
+    (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence char (string-trim '(#\space) sequence))))))
 
 (defun show-all-unique-elements (fn database)
   "Make a list of all unique tags.
@@ -38,5 +38,39 @@
     (mapcar #'(lambda(x) (incf (second (assoc x elements))) ) items)
     (sort elements  #'> :key #'second )))
 
+; (defun item-in-record-p (item record)
+;     (not (member nil (mapcan #'(lambda (x) (find item (funcall x record))) *haystacks*))))
 
+(defun item-in-record-p (item record)
+    (remove nil (mapcar #'(lambda (x) (find item (funcall x record))) *haystacks*)) )
 
+(defun items-in-record-p (items record)
+  (not (member nil (remove-duplicates (mapcar #'(lambda (x) (item-in-record-p x record)) items))))   )
+
+; (defun search-bookmarks (items database)
+;   (if items
+;     (if
+;       (items-in-record-p items (first database)
+;                          (list (first database) (search-bookmarks items (rest database))))
+;       (search-bookmarks items (rest database)))
+;     database)
+;   )
+
+(defun search-bookmarks (items database)
+  (let* ((result '())
+        (record (first database))
+        (remaining (rest database))
+        (member-p (items-in-record-p items record)))
+    (when member-p (push record result))
+    (when remaining
+      (if member-p (progn
+                     (search-bookmarks items (rest database)))
+        (search-bookmarks items (rest database))))
+    result))
+
+(defun search-bookmarks (items database)
+  (cond
+    ((null database) nil)
+    ; ((listp (first database)) database)
+    ((items-in-record-p items (first database)) (cons (first database) (search-bookmarks items (rest database))))
+    (t (search-bookmarks items (rest database)))))
