@@ -77,10 +77,9 @@
      (select-links-with-title (rest title-list) (select-in title title-list database)))
     (t database)))
 
-; (select (where 'read? nil) :summary '(lisp))
 ; (select  :fn (where 'read? nil))
 (defun select (&key (fn #'(lambda (x) x)) tags summary)
-  "(select :fn (where id 1) :tags '(python) :summary '(language))"
+  "Usage: (select :fn (where id 1) :tags '(python) :summary '(language))"
   (select-links-with-summary summary
                              (select-links-with-tags tags
                                                      (remove-if-not fn *db*))))
@@ -88,23 +87,8 @@
 (defun select-by-id (id)
   (first (select :fn (where 'id id))))
 
-; ;  or (find 'python (summary (first *db*))) (find 'python (tags (first *db*)))
-; (defun search-bookmarks (items database)
-;   (if items
-;     (remove-duplicates
-;       (concatenate 'list
-;                    (mapcar #'(lambda (x)
-;                                (select-in x items database)) *haystacks*)))
-;     database))
-
-;  (or (find 'python (summary (first *db*))) (find 'python (tags (first *db*))))
-
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
-
-; * (show-all-unique-elements #'tags *db*)
-; * (show-all-unique-elements #'summary *db*)
-; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
 
 (defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
   "(update :fn (where 'id 1) :tags '(python programming homepage tutorial))"
@@ -119,8 +103,6 @@
                 (if read-p  (setf (read? row) read?))
                 (setf (date-modified row) (get-universal-time)))
               row) *db*)))
-
-;; (sort *db* '< :key 'date-added)
 
 (defun load-database (filename)
   "Load database file."
