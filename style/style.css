@@ -251,6 +251,8 @@ color: #C1BDBD;
   box-sizing: border-box;
   width: 100%;
   text-align: left;
+  /* position: fixed; */
+  bottom: 0;
   font: normal 16px sans-serif;
 
   padding: 45px 50px;

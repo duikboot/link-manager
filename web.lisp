@@ -87,9 +87,7 @@
          (search-params (or (get-parameter "search") '()))
          (database (select-links-with-tags (create-query-sequence tags #\,) database))
          (database (select-links-with-summary (create-query-sequence summary #\,) database))
-         (database (search-bookmarks (create-query-sequence search-params #\space) database))
-         ; (parameters (get-parameters*))
-         )
+         (database (search-bookmarks (create-query-sequence search-params #\space) database)))
     (render-bookmarks database)))
 
 (defun save-bookmark ()
@@ -128,13 +126,13 @@
                          (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
                          (:div :class "col-sm-10"
                             (format t "<textarea name=\"summary\" placeholder=\"Descriptive summary of site contents\"
-                                tabindex=\"3\" class=\"form-control\"  rows=\"10\" cols=\"70\">")
+                                tabindex=\"3\" class=\"form-control\" rows=\"10\" cols=\"70\">")
                             (if summary (format t "~{~(~a~^ ~)~}" summary))
                             (format t "</textarea>")))
                    (:div :class "form-group"
                          (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
                          (:div :class "col-sm-10"
-                             (:input :type "text" :id "bf_tags" :placeholder "comma, separated, words"
+                             (:input :type "text" :id "bf_tags" :placeholder "space separated words"
                                 :tabindex "4" :class "form-control" :value
                                  (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
                    (:div :class "form-group"
@@ -171,8 +169,6 @@
                           (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
                       (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
                       (:a :class "glyphicon glyphicon-remove" :href (format nil "/bookmarks/delete/~a" (id row)))
-                      ; try make link for delete and make it cancable.
-                      ; (format t "<textarea name=\"summary\" rows= \"10\" cols= \"70\">")
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))
