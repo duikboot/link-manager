@@ -60,7 +60,7 @@
           (:ul :class "nav navbar-nav"
             (:li
                 (:a :href "/bookmarks/add" "Add bookmark")))
-          (:form :method "get" :class "navbar-form navbar-left" :role "search"
+          (:form :method "get" :action "/bookmarks/" :class "navbar-form navbar-left" :role "search"
             (:div :class "form-group"
               (:input :type "text" :name "search"
                       :class "form-control" :placeholder "Search bookmarks..."))))))))
