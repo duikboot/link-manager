@@ -45,18 +45,6 @@
   (not (member nil (remove-duplicates (mapcar #'(lambda (x) (item-in-record-p x record)) items)))))
 
 (defun search-bookmarks (items database)
-  (let* ((result '())
-        (record (first database))
-        (remaining (rest database))
-        (member-p (items-in-record-p items record)))
-    (when member-p (push record result))
-    (when remaining
-      (if member-p (progn
-                     (search-bookmarks items (rest database)))
-        (search-bookmarks items (rest database))))
-    result))
-
-(defun search-bookmarks (items database)
   (cond
     ((null database) nil)
     ; ((listp (first database)) database)
