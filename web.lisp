@@ -25,7 +25,7 @@
 (defun truncate-string (str len)
   (cond
     ((<= (length str) len) str)
-    (t (concatenate 'list (subseq str 0 len) "..."))))
+    (t (concatenate 'string (subseq str 0 len) "..."))))
 
 ;standard page for all the html pages
 (defmacro standard-page ((&key title) &body body)
@@ -82,11 +82,9 @@
   (let* ((order (get-order (get-parameter "order")))
          (key (or (intern (string-upcase (get-parameter "sort"))) 'date-added))
          (tags (or (get-parameter "tags") '()))
-         (summary (or (get-parameter "summary") '()))
          (database (stable-sort (copy-list *db*) order :key key))
          (search-params (or (get-parameter "search") '()))
-         (database (select-links-with-tags (create-query-sequence tags #\,) database))
-         (database (select-links-with-summary (create-query-sequence summary #\,) database))
+         (database (select :tags (create-query-sequence tags #\,) :database database))
          (database (search-bookmarks (create-query-sequence search-params #\space) database)))
     (render-bookmarks database)))
 
@@ -172,7 +170,7 @@
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))
-                      (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row))))
+                      (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row))))
                       )) database))))
 
 (defun delete-bookmark ()
@@ -180,6 +178,7 @@
   (let ((bookmark-id
           (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
     (delete-link (parse-integer bookmark-id)))
+  (save)
   (redirect "/"))
 
 (defun edit-bookmark ()
