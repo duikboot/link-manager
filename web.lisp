@@ -101,9 +101,11 @@
         (progn (update :fn (where 'id id) :title title :link link
                        :summary summary :tags tags)
                (save)
-               (redirect "/bookmarks/")) 
+               ; (setf *successfully-added* t)
+               (redirect "/bookmarks/"))
         (progn (make-link title link summary tags)
                (save)
+               ; (setf *successfully-added* t)
                (redirect "/bookmarks/"))))))
 
 (defun show-error ()
@@ -112,6 +114,14 @@
     (htm
       (:div
         :class "alert alert-danger" "Title, link, and tags are obligated."))))
+
+(defun show-success ()
+  (with-html-output
+    (*standard-output* nil :indent t)
+    (htm
+      (:div
+        :class "alert alert-success fade in" "Bookmark successfully added."))))
+
 
 (defun bookmark-form (&key id title link summary tags (error nil))
     (standard-page

@@ -15,6 +15,8 @@
 (defvar *db* nil)
 (defvar *web-acceptor* nil)
 
+; (defvar *successfully-added* nil)
+
 (defparameter *database* "test.db")
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
