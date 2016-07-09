@@ -95,19 +95,32 @@
      (link (string-trim '(#\space) (post-parameter "link")))
      (summary (create-query-sequence (string-trim '(#\space) (post-parameter "summary")) #\space))
      (tags (create-query-sequence (string-trim '(#\space) (post-parameter "tags")) #\space)))
-    (if (not (= id 0))
-      (update :fn (where 'id id) :title title :link link
-                   :summary summary :tags tags)
-      (make-link title link summary tags)))
-  (save)
-  (redirect "/bookmarks/"))
+    (if (not (and title link tags))
+      (bookmark-form :title title :link link :tags tags :error t)
+      (if (not (= id 0))
+        (progn (update :fn (where 'id id) :title title :link link
+                       :summary summary :tags tags)
+               (save)
+               (redirect "/bookmarks/")) 
+        (progn (make-link title link summary tags)
+               (save)
+               (redirect "/bookmarks/"))))))
 
-(defun bookmark-form (&key id title link summary tags)
+(defun error-or-success ()
+  (with-html-output
+    (*standard-output* nil :indent t)
+    (htm
+      (:div
+        :class "alert alert-danger" "Title, link, and tags are obligated."))))
+
+(defun bookmark-form (&key id title link summary tags (error nil))
     (standard-page
       (:title "Add bookmark")
       (:div :style "margin: 0 auto; width: 90%"
             (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
                    (:input :type "hidden" :value (if id id 0) :name "id")
+                   (when error
+                     (error-or-success))
                    (:div :class "form-group"
                          (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
                          (:div :class "col-sm-10"
