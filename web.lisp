@@ -106,7 +106,7 @@
                (save)
                (redirect "/bookmarks/"))))))
 
-(defun error-or-success ()
+(defun show-error ()
   (with-html-output
     (*standard-output* nil :indent t)
     (htm
@@ -120,7 +120,7 @@
             (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
                    (:input :type "hidden" :value (if id id 0) :name "id")
                    (when error
-                     (error-or-success))
+                     (show-error))
                    (:div :class "form-group"
                          (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
                          (:div :class "col-sm-10"
