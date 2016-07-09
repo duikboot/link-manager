@@ -63,14 +63,6 @@
      (select-links-with-tags (rest tags-list) (select-in tags tags-list database)))
     (t database)))
 
-(defun select-links-with (fn-selector items database)
-  "Select all the bookmarks with title"
-  (cond
-    ((equal (length items) 1) (select-in fn-selector items database))
-    ((plusp (length items))
-     (select-links-with (rest items) (select-in fn-selector items database)))
-    (t database)))
-
 ; (select  :fn (where 'read? nil))
 (defun select (&key (fn #'(lambda (x) x)) tags (database *db*))
   "Usage: (select :fn (where id 1) :tags '(python) :summary '(language))"
