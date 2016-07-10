@@ -25,7 +25,7 @@
 (defun truncate-string (str len)
   (cond
     ((<= (length str) len) str)
-    (t (concatenate 'list (subseq str 0 len) "..."))))
+    (t (concatenate 'string (subseq str 0 len) "..."))))
 
 ;standard page for all the html pages
 (defmacro standard-page ((&key title) &body body)
@@ -82,11 +82,9 @@
   (let* ((order (get-order (get-parameter "order")))
          (key (or (intern (string-upcase (get-parameter "sort"))) 'date-added))
          (tags (or (get-parameter "tags") '()))
-         (summary (or (get-parameter "summary") '()))
          (database (stable-sort (copy-list *db*) order :key key))
          (search-params (or (get-parameter "search") '()))
-         (database (select-links-with-tags (create-query-sequence tags #\,) database))
-         (database (select-links-with-summary (create-query-sequence summary #\,) database))
+         (database (select :tags (create-query-sequence tags #\,) :database database))
          (database (search-bookmarks (create-query-sequence search-params #\space) database)))
     (render-bookmarks database)))
 
@@ -97,19 +95,42 @@
      (link (string-trim '(#\space) (post-parameter "link")))
      (summary (create-query-sequence (string-trim '(#\space) (post-parameter "summary")) #\space))
      (tags (create-query-sequence (string-trim '(#\space) (post-parameter "tags")) #\space)))
-    (if (not (= id 0))
-      (update :fn (where 'id id) :title title :link link
-                   :summary summary :tags tags)
-      (make-link title link summary tags)))
-  (save)
-  (redirect "/bookmarks/"))
+    (if (not (and title link tags))
+      (bookmark-form :title title :link link :tags tags :error t)
+      (if (not (= id 0))
+        (progn (update :fn (where 'id id) :title title :link link
+                       :summary summary :tags tags)
+               (save)
+               ; (setf *successfully-added* t)
+               (redirect "/bookmarks/"))
+        (progn (make-link title link summary tags)
+               (save)
+               ; (setf *successfully-added* t)
+               (redirect "/bookmarks/"))))))
 
-(defun bookmark-form (&key id title link summary tags)
+(defun show-error ()
+  (with-html-output
+    (*standard-output* nil :indent t)
+    (htm
+      (:div
+        :class "alert alert-danger" "Title, link, and tags are obligated."))))
+
+(defun show-success ()
+  (with-html-output
+    (*standard-output* nil :indent t)
+    (htm
+      (:div
+        :class "alert alert-success fade in" "Bookmark successfully added."))))
+
+
+(defun bookmark-form (&key id title link summary tags (error nil))
     (standard-page
       (:title "Add bookmark")
       (:div :style "margin: 0 auto; width: 90%"
             (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
                    (:input :type "hidden" :value (if id id 0) :name "id")
+                   (when error
+                     (show-error))
                    (:div :class "form-group"
                          (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
                          (:div :class "col-sm-10"
@@ -172,7 +193,7 @@
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))
-                      (:div (fmt "Summary: ~{ ~(~a~) ~}" (summary row))))
+                      (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row))))
                       )) database))))
 
 (defun delete-bookmark ()
@@ -180,6 +201,7 @@
   (let ((bookmark-id
           (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
     (delete-link (parse-integer bookmark-id)))
+  (save)
   (redirect "/"))
 
 (defun edit-bookmark ()

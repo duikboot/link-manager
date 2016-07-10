@@ -15,6 +15,8 @@
 (defvar *db* nil)
 (defvar *web-acceptor* nil)
 
+; (defvar *successfully-added* nil)
+
 (defparameter *database* "test.db")
 (defparameter *counter* "counter")
 (defparameter *web-port* 8080)
@@ -57,32 +59,14 @@
   "Select all the bookmarks with tags"
   (cond
     ((equal (length tags-list) 1) (select-in tags tags-list database))
-    ((> (length tags-list) 1)
+    ((plusp (length tags-list))
      (select-links-with-tags (rest tags-list) (select-in tags tags-list database)))
     (t database)))
 
-(defun select-links-with-summary (summary-list database)
-  "Select all the bookmarks with summary"
-  (cond
-    ((equal (length summary-list) 1) (select-in summary summary-list database))
-    ((> (length summary-list) 1)
-     (select-links-with-summary (rest summary-list) (select-in summary summary-list database)))
-    (t database)))
-
-(defun select-links-with-title (title-list database)
-  "Select all the bookmarks with title"
-  (cond
-    ((equal (length title-list) 1) (select-in title title-list database))
-    ((> (length title-list) 1)
-     (select-links-with-title (rest title-list) (select-in title title-list database)))
-    (t database)))
-
 ; (select  :fn (where 'read? nil))
-(defun select (&key (fn #'(lambda (x) x)) tags summary)
+(defun select (&key (fn #'(lambda (x) x)) tags (database *db*))
   "Usage: (select :fn (where id 1) :tags '(python) :summary '(language))"
-  (select-links-with-summary summary
-                             (select-links-with-tags tags
-                                                     (remove-if-not fn *db*))))
+  (select-links-with-tags tags (remove-if-not fn database)))
 
 (defun select-by-id (id)
   (first (select :fn (where 'id id))))

@@ -24,8 +24,9 @@
     (format nil "~a ~4d-~2,'0d-~2,'0d ~2,'0d:~2,'0d:~2,'0d" str year month date hour minute sec)))
 
 (defun create-query-sequence (sequence char)
-  (when sequence
-    (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence char (string-trim '(#\space) sequence))))))
+  (if (plusp (length sequence))  
+    (mapcar #'intern (mapcar #'string-upcase (split-sequence:split-sequence char (string-trim '(#\space) sequence))))
+    '()))
 
 (defun show-all-unique-elements (fn database)
   "Make a list of all unique tags.
