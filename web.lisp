@@ -101,11 +101,11 @@
         (progn (update :fn (where 'id id) :title title :link link
                        :summary summary :tags tags)
                (save)
-               ; (setf *successfully-added* t)
+               (setf *successfully-added* t)
                (redirect "/bookmarks/"))
         (progn (make-link title link summary tags)
                (save)
-               ; (setf *successfully-added* t)
+               (setf *successfully-added* t)
                (redirect "/bookmarks/"))))))
 
 (defun show-error ()
