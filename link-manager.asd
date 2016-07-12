@@ -7,9 +7,11 @@
   :author "Arjen Dijkstra <dijkstra.arjen@gmail.com>"
   :license "MIT"
   :serial t
-  :depends-on (:hunchentoot :cl-who :split-sequence)
+  :depends-on (:hunchentoot :cl-who :split-sequence clsql)
   :serial t
   :components ((:file "package")
+               (:file "config")
+               (:file "models")
                (:file "macros")
                (:file "dispatchers")
                (:file "utils")
