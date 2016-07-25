@@ -21,3 +21,7 @@
 
 (defparameter *haystacks* '(title summary tags)
   "These are the items you can search in")
+
+
+(clsql:connect '("localhost" "bookmarks" "postgres" "postgres")
+               :database-type :postgresql)

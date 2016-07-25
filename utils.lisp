@@ -1,5 +1,5 @@
 (in-package :link-manager)
-
+
 (defvar *log* *error-output*)
 
 (defun l (&rest args)
