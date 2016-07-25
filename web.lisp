@@ -39,7 +39,7 @@
        (:link :href "/bootstrap.css" :rel "stylesheet" :type "text/css")
        (:link :href "/font-awesome.css" :rel "stylesheet" :type "text/css")
        (:script :src "/jquery.js")
-       (:script :src "/bootstrap-js.js"))
+       (:script :src "/bootstrap-js.js")
        (:script :src "/confirmdelete.js"))
       (:body
         (header)
@@ -47,7 +47,7 @@
          (:h2 :style "text-align:center" ,title)
          (:br)
          ,@body)
-        (footer))))
+        (footer)))))
 
 ;; header procedure
 (defun header ()
