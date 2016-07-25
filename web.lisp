@@ -1,4 +1,3 @@
-
 (in-package :link-manager)
 
 (defun start-server ()
@@ -48,7 +47,7 @@
          (:h2 :style "text-align:center" ,title)
          (:br)
          ,@body)
-        (footer)))))
+        (footer))))
 
 ;; header procedure
 (defun header ()
