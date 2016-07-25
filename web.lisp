@@ -41,6 +41,7 @@
        (:link :href "/font-awesome.css" :rel "stylesheet" :type "text/css")
        (:script :src "/jquery.js")
        (:script :src "/bootstrap-js.js"))
+       (:script :src "/confirmdelete.js"))
       (:body
         (header)
         (:div :style "min-height:450px"
@@ -189,7 +190,7 @@
                       (:a :target "_blank" :href
                           (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
                       (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
-                      (:a :class "glyphicon glyphicon-remove" :href (format nil "/bookmarks/delete/~a" (id row)))
+                      (:a :class "glyphicon glyphicon-remove confirm-delete" :data-title (format nil "~a" (title row)) :href (format nil "/bookmarks/delete/~a" (id row)))
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))
