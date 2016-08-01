@@ -6,7 +6,8 @@
   :author "Arjen Dijkstra <dijkstra.arjen@gmail.com>"
   :license "MIT"
   :serial t
-  :depends-on (:hunchentoot :cl-who :split-sequence :clsql)
+  :depends-on (:hunchentoot :cl-who :split-sequence :clsql :bknr.datastore
+                            :bknr.indices)
   :serial t
   :components ((:file "package")
                ; (:file "macros")

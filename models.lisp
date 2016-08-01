@@ -1,25 +1,13 @@
 (in-package :link-manager)
 
 
-; (def-view-class bookmark ()
-;                 ((id
-;                    :accessor id
-;                    :type :integer))
-;                 ((title
-;                    :accessor title
-;                    :type :string
-;                    ))
-;                 (link)
-;                 ((tags :type :list)))
-
-
 (clsql:def-view-class tag ()
                       ((tagsid
                          :db-kind :key
                          :db-constraints (:not-null :auto-increment)
                          :type integer)
                        (name
-                         :type (string)
+                         :type (string 50)
                          :accessor name
                          :initarg :name)
                        (bookmark
@@ -52,6 +40,7 @@
                          :accessor date-added)
                        (tags
                          :accessor tags
+                         :initarg :tags
                          :db-kind :join
                          :db-info (:join-class tags
                                                :home-key bookmarkid
@@ -75,7 +64,7 @@
   (make-instance 'tag :name "lisp")
   (make-instance 'bookmark :title "lisp programming" :link
                  "http://lisp.org" :summary "test"
-                 :tag '(lisp python))) 
+                 :tags '(lisp python))) 
 
 (clsql:select 'bookmark)
 
