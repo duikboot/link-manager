@@ -196,39 +196,44 @@
                       (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row))))
                       )) database))))
 
+(defun last-element (lst)
+  "Return last element in list."
+  (first (last lst)))
+
+(defun get-last-element-from-uri (uri)
+  (last-element (split-sequence:split-sequence #\/ uri)))
+
 (defun delete-bookmark ()
   "Delet bookmark"
   (let ((bookmark-id
-          (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
+          (get-last-element-from-uri (request-uri*))))
     (delete-link (parse-integer bookmark-id)))
   (save)
   (redirect "/"))
 
 (defun edit-bookmark ()
-  (let* ((bookmark-id
-          (first (reverse (split-sequence:split-sequence #\/ (request-uri*)))))
-         (bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))
-         (id (id bookmark))
-         (title (title bookmark))
-         (link (link bookmark))
-         (summary (summary bookmark))
-         (tags (tags bookmark)))
+  (let* ((bookmark-id (get-last-element-from-uri (request-uri*)))
+	 (bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))
+	 (id (id bookmark))
+	 (title (title bookmark))
+	 (link (link bookmark))
+	 (summary (summary bookmark))
+	 (tags (tags bookmark)))
     (bookmark-form :id id :title title :link link :summary summary :tags tags)))
 
 (defun get-bookmark ()
-  (let ((bookmark-id
-          (first (reverse (split-sequence:split-sequence #\/ (request-uri*))))))
+  (let ((bookmark-id (get-last-element-from-uri (request-uri*))))
     (with-html-output-to-string
       (*standard-output* nil :prologue t :indent t)
-        (:html
-            (:head (:title "Bookmark details"))
-            (:body
-            (htm
-              (:div
-                (fmt "~A"
-                     (first
-                       (select :fn
-                               (where 'id (parse-integer bookmark-id))))))))))))
+      (:html
+	(:head (:title "Bookmark details"))
+	(:body
+	  (htm
+	    (:div
+	      (fmt "~A"
+		   (first
+		     (select :fn
+			     (where 'id (parse-integer bookmark-id))))))))))))
 
 (defun start-app ()
   (start-server)

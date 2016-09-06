@@ -55,10 +55,14 @@
     (make-bookmark :title title :link link :summary summary :tags tags
                    :read? read?)))
 
+(defun single (lst)
+  "Return true if lst has only one element in it."
+  (and (consp lst) (not (rest lst))))
+
 (defun select-links-with-tags (tags-list database)
   "Select all the bookmarks with tags"
   (cond
-    ((equal (length tags-list) 1) (select-in tags tags-list database))
+    ((single tags-list) (select-in tags tags-list database))
     ((plusp (length tags-list))
      (select-links-with-tags (rest tags-list) (select-in tags tags-list database)))
     (t database)))
