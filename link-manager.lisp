@@ -6,9 +6,6 @@
 ;;;; - (load "link-manager.lisp")
 ;;;; - (in-package :link-manager)
 
-;; Sorting:
-;; (sort *db* '< :key 'date-added)
-
 (in-package :link-manager)
 
 
@@ -47,7 +44,6 @@
 (defun add-record (link)
   "Push cd onto *db* stack"
   (push link *db*))
-
 
 (defun make-link (title link summary tags &optional read?)
   "Create structure for link"
