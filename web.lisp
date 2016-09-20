@@ -214,12 +214,12 @@
 
 (defun edit-bookmark ()
   (let* ((bookmark-id (get-last-element-from-uri (request-uri*)))
-	 (bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))
-	 (id (id bookmark))
-	 (title (title bookmark))
-	 (link (link bookmark))
-	 (summary (summary bookmark))
-	 (tags (tags bookmark)))
+         (bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))
+         (id (id bookmark))
+         (title (title bookmark))
+         (link (link bookmark))
+         (summary (summary bookmark))
+         (tags (tags bookmark)))
     (bookmark-form :id id :title title :link link :summary summary :tags tags)))
 
 (defun get-bookmark ()
@@ -227,14 +227,14 @@
     (with-html-output-to-string
       (*standard-output* nil :prologue t :indent t)
       (:html
-	(:head (:title "Bookmark details"))
-	(:body
-	  (htm
-	    (:div
-	      (fmt "~A"
-		   (first
-		     (select :fn
-			     (where 'id (parse-integer bookmark-id))))))))))))
+        (:head (:title "Bookmark details"))
+        (:body
+          (htm
+            (:div
+              (fmt "~A"
+                   (first
+                     (select :fn
+                             (where 'id (parse-integer bookmark-id))))))))))))
 
 (defun start-app ()
   (start-server)
