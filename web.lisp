@@ -193,7 +193,8 @@
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))
-                      (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row))))
+                      ; (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
+                      )
                       )) database))))
 
 (defun last-element (lst)
