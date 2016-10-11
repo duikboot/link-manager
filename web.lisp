@@ -99,7 +99,6 @@
 (defun save-bookmark ()
   (let
     ((id (parse-integer (post-parameter "id")))
-     ; (title (create-query-sequence (string-trim '(#\space) (post-parameter "title")) #\space))
      (title (create-query-sequence-from-post "title"))
      (link (trim "link"))
      (summary (create-query-sequence-from-post "summary"))
