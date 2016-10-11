@@ -88,13 +88,21 @@
          (database (search-bookmarks (create-query-sequence search-params #\space) database)))
     (render-bookmarks database)))
 
+(defun trim (item)
+  (string-trim '(#\space) (post-parameter item)))
+
+(defmacro create-query-sequence-from-post (item)
+  `(create-query-sequence
+     (string-trim '(#\space) (post-parameter ,item)) #\space))
+
+
 (defun save-bookmark ()
   (let
     ((id (parse-integer (post-parameter "id")))
-     (title (create-query-sequence (string-trim '(#\space) (post-parameter "title")) #\space))
-     (link (string-trim '(#\space) (post-parameter "link")))
-     (summary (create-query-sequence (string-trim '(#\space) (post-parameter "summary")) #\space))
-     (tags (create-query-sequence (string-trim '(#\space) (post-parameter "tags")) #\space)))
+     (title (create-query-sequence-from-post "title"))
+     (link (trim "link"))
+     (summary (create-query-sequence-from-post "summary"))
+     (tags (create-query-sequence-from-post "tags")))
     (if (not (and title link tags))
       (bookmark-form :title title :link link :tags tags :error t)
       (if (not (= id 0))
