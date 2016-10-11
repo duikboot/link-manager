@@ -92,9 +92,7 @@
   (string-trim '(#\space) (post-parameter item)))
 
 (defmacro create-query-sequence-from-post (item)
-  `(create-query-sequence
-     (string-trim '(#\space) (post-parameter ,item)) #\space))
-
+  `(create-query-sequence (trim ,item)))
 
 (defun save-bookmark ()
   (let
