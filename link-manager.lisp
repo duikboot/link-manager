@@ -12,11 +12,9 @@
 (defvar *db* nil)
 (defvar *web-acceptor* nil)
 
-; (defvar *successfully-added* nil)
-
 (defparameter *database* "test.db")
 (defparameter *counter* "counter")
-(defparameter *web-port* 8080)
+(defparameter *web-port* 9999)
 
 (defparameter *haystacks* '(title summary tags)
   "These are the items you can search in")
@@ -56,7 +54,8 @@
   (and (consp lst) (not (rest lst))))
 
 (defun select-links-with-tags (tags-list database)
-  "Select all the bookmarks with tags"
+
+ "Select all the bookmarks with tags"
   (cond
     ((single tags-list) (select-in tags tags-list database))
     ((plusp (length tags-list))

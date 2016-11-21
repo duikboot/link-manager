@@ -17,8 +17,8 @@
 (defun get-order (x)
   (if (equalp "desc" x) #'> #'<))
 
-(defun truncate-string (str len)
-  (if (> (length str) len) (subseq str 0 len) str))
+; (defun truncate-string (str len)
+;   (if (> (length str) len) (subseq str 0 len) str))
 
 
 (defun truncate-string (str len)
@@ -79,13 +79,15 @@
   (redirect "/bookmarks/"))
 
 (defun bookmarks ()
-  (let* ((order (get-order (get-parameter "order")))
-         (key (or (intern (string-upcase (get-parameter "sort"))) 'date-added))
-         (tags (or (get-parameter "tags") '()))
-         (database (stable-sort (copy-list *db*) order :key key))
-         (search-params (or (get-parameter "search") '()))
-         (database (select :tags (create-query-sequence tags #\,) :database database))
-         (database (search-bookmarks (create-query-sequence search-params #\space) database)))
+  (let*
+    ((order (get-order (get-parameter "order")))
+     (key (or (intern (string-upcase (get-parameter "sort"))) 'date-added))
+     (tags (or (get-parameter "tags") '()))
+     (database (stable-sort (copy-list *db*) order :key key))
+     (search-params (or (get-parameter "search") '()))
+     (database (select :tags (create-query-sequence tags #\space) :database database))
+     (database
+       (search-bookmarks (create-query-sequence search-params #\space) database)))
     (render-bookmarks database)))
 
 (defun trim (item)
@@ -104,15 +106,11 @@
     (if (not (and title link tags))
       (bookmark-form :title title :link link :tags tags :error t)
       (if (not (= id 0))
-        (progn (update :fn (where 'id id) :title title :link link
-                       :summary summary :tags tags)
-               (save)
-               (setf *successfully-added* t)
-               (redirect "/bookmarks/"))
-        (progn (make-link title link summary tags)
-               (save)
-               (setf *successfully-added* t)
-               (redirect "/bookmarks/"))))))
+        (update :fn (where 'id id) :title title :link link
+                :summary summary :tags tags)
+        (make-link title link summary tags)))
+    (save)
+    (redirect "/bookmarks/add")))
 
 (defun show-error ()
   (with-html-output
@@ -127,7 +125,6 @@
     (htm
       (:div
         :class "alert alert-success fade in" "Bookmark successfully added."))))
-
 
 (defun bookmark-form (&key id title link summary tags (error nil))
     (standard-page
@@ -177,11 +174,11 @@
               :class "col-md-12"
               (:div
                 :class "tags-list well"
-                (mapcar #'(lambda (tag)
+                (mapc #'(lambda (tag)
                             (htm
                               (:a
                                 :class "btn btn-primary btn-xs" :role "button"
-                                :href "#" (format t "~{ ~a ~}" tag)))) tags)))))))
+                                :href (format nil "?tags=~a" (first tag)) (format t "~{ ~a ~}" tag)))) tags)))))))
 
 (defun render-bookmarks (database)
   (standard-page
@@ -189,7 +186,7 @@
     (:div :class "container"
       (render-tags (number-of-occurrences 'tags database))
       (htm :br)
-      (mapcar #'(lambda (row)
+      (mapc #'(lambda (row)
                   (htm
                     (:div :class "col-md-4 col column-div"
                       (:a :target "_blank" :href
