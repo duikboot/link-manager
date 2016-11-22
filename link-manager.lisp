@@ -6,9 +6,6 @@
 ;;;; - (load "link-manager.lisp")
 ;;;; - (in-package :link-manager)
 
-;; Sorting:
-;; (sort *db* '< :key 'date-added)
-
 (in-package :link-manager)
 
 
@@ -17,7 +14,10 @@
 
 (defparameter *database* "test.db")
 (defparameter *counter* "counter")
-(defparameter *web-port* 8080)
+(defparameter *web-port* 9999)
+
+(defparameter *haystacks* '(title summary tags)
+  "These are the items you can search in")
 
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
@@ -43,51 +43,35 @@
   "Push cd onto *db* stack"
   (push link *db*))
 
-
 (defun make-link (title link summary tags &optional read?)
   "Create structure for link"
   (add-record
     (make-bookmark :title title :link link :summary summary :tags tags
                    :read? read?)))
 
+(defun single (lst)
+  "Return true if lst has only one element in it."
+  (and (consp lst) (not (rest lst))))
+
 (defun select-links-with-tags (tags-list database)
-  "Select all the bookmarks with tags"
+
+ "Select all the bookmarks with tags"
   (cond
-    ((equal (length tags-list) 1) (select-in tags tags-list database))
-    ((> (length tags-list) 1)
+    ((single tags-list) (select-in tags tags-list database))
+    ((plusp (length tags-list))
      (select-links-with-tags (rest tags-list) (select-in tags tags-list database)))
     (t database)))
 
-(defun select-links-with-summary (summary-list database)
-  "Select all the bookmarks with summary"
-  (cond
-    ((equal (length summary-list) 1) (select-in summary summary-list database))
-    ((> (length summary-list) 1)
-     (select-links-with-summary (rest summary-list) (select-in summary summary-list database)))
-    (t database)))
-
-; (select (where 'read? nil) :summary '(lisp))
 ; (select  :fn (where 'read? nil))
-(defun select (&key (fn #'(lambda (x) x)) tags summary)
-  "(select :fn (where id 1) :tags '(python) :summary '(language))"
-  (select-links-with-summary summary
-                             (select-links-with-tags tags
-                                                     (remove-if-not fn *db*))))
+(defun select (&key (fn #'(lambda (x) x)) tags (database *db*))
+  "Usage: (select :fn (where id 1) :tags '(python) :summary '(language))"
+  (select-links-with-tags tags (remove-if-not fn database)))
 
 (defun select-by-id (id)
-     (first (select :fn (where 'id id))))
+  (first (select :fn (where 'id id))))
 
 (defun delete-link (id)
   (setf *db* (remove-if #'(lambda (link) (equal (id link) id)) *db*)))
-
-; * (show-all-unique-elements #'tags *db*)
-; * (show-all-unique-elements #'summary *db*)
-; (FUNCTIONAL DJANGO LISP HASKELL PYTHON VIM PROGRAMMING EDITOR SEARCH)
-
-(defun show-all-unique-elements (fn database)
-  "Make a list of all unique tags.
-  (show-all-unique-elements 'tags *db*)"
-  (remove-duplicates (flatten (mapcar fn database))))
 
 (defun update (&key (fn #'(lambda (x) x)) title link summary tags (read? nil read-p))
   "(update :fn (where 'id 1) :tags '(python programming homepage tutorial))"
@@ -103,11 +87,9 @@
                 (setf (date-modified row) (get-universal-time)))
               row) *db*)))
 
-;; (sort *db* '< :key 'date-added)
-
 (defun load-database (filename)
-  (with-open-file (in filename
-                      :if-does-not-exist nil)
+  "Load database file."
+  (with-open-file (in filename :if-does-not-exist nil)
     (when in
       (with-standard-io-syntax
         (setf *highest-id* (read in))

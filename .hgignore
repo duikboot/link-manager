@@ -1,4 +1,5 @@
 linkmanager
 link-manager.fasl
 tags
-.idea/*
+.idea
+test.db
