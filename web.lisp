@@ -126,42 +126,41 @@
         :class "alert alert-success fade in" "Bookmark successfully added."))))
 
 (defun bookmark-form (&key id title link summary tags (error nil))
-    (standard-page
-      (:title "Add bookmark")
-      (:div :style "margin: 0 auto; width: 90%"
-            (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
-                   (:input :type "hidden" :value (if id id 0) :name "id")
-                   (when error
-                     (show-error))
-                   (:div :class "form-group"
-                         (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
-                         (:div :class "col-sm-10"
+  (standard-page
+    (:title "Add bookmark")
+    (:div :style "margin: 0 auto; width: 90%"
+          (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
+                 (:input :type "hidden" :value (if id id 0) :name "id")
+                 (when error
+                   (show-error))
+                 (:div :class "form-group"
+                       (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
+                       (:div :class "col-sm-10"
                              (:input :type "text" :id "bf_title" :placeholder "Bookmark title"
-                                :tabindex "1" :class "form-control" :value
-                                 (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title")))
-                   (:div :class "form-group"
-                         (:label :for "bf_link" :class "col-sm-2 control-label" "Link")
-                         (:div :class "col-sm-10"
+                                     :tabindex "1" :class "form-control" :value
+                                     (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title")))
+                 (:div :class "form-group"
+                       (:label :for "bf_link" :class "col-sm-2 control-label" "Link")
+                       (:div :class "col-sm-10"
                              (:input :type "url" :id "bf_link" :placeholder "https://www.site.com"
-                                :tabindex "2" :class "form-control" :value
-                                 (if link link nil) :name "link")))
-                   (:div :class "form-group"
-                         (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
-                         (:div :class "col-sm-10"
-                            (format t "<textarea name=\"summary\" placeholder=\"Descriptive summary of site contents\"
-                                tabindex=\"3\" class=\"form-control\" rows=\"10\" cols=\"70\">")
-                            (if summary (format t "~{~(~a~^ ~)~}" summary))
-                            (format t "</textarea>")))
-                   (:div :class "form-group"
-                         (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
-                         (:div :class "col-sm-10"
+                                     :tabindex "2" :class "form-control" :value
+                                     (if link link nil) :name "link")))
+                 (:div :class "form-group"
+                       (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
+                       (:div :class "col-sm-10"
+                             (format t "<textarea name=\"summary\" placeholder=\"Descriptive summary of site contents\" tabindex=\"3\" class=\"form-control\" rows=\"10\" cols=\"70\">")
+                             (when summary (format t "~{~(~a~^ ~)~}" summary))
+                             (format t "</textarea>")))
+                 (:div :class "form-group"
+                       (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
+                       (:div :class "col-sm-10"
                              (:input :type "text" :id "bf_tags" :placeholder "space separated words"
-                                :tabindex "4" :class "form-control" :value
-                                 (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
-                   (:div :class "form-group"
-                        (:div :class "col-sm-offset-2 col-sm-10"
-                            (:button :type "submit" :tabindex "5" :class "btn btn-primary" "Save")
-                            (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")))))))
+                                     :tabindex "4" :class "form-control" :value
+                                     (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
+                 (:div :class "form-group"
+                       (:div :class "col-sm-offset-2 col-sm-10"
+                             (:button :type "submit" :tabindex "5" :class "btn btn-primary" "Save")
+                             (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")))))))
 
 
 (defun render-tags (tags tags-list)
@@ -197,7 +196,6 @@
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
                       (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))))
                       ; (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
-                      
               database))))
 
 (defun last-element (lst)
