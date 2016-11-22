@@ -82,13 +82,13 @@
   (let*
     ((order (get-order (get-parameter "order")))
      (key (or (intern (string-upcase (get-parameter "sort"))) 'date-added))
-     (tags (or (get-parameter "tags") '()))
+     (tags (create-query-sequence (or (get-parameter "tags") '()) #\space))
      (database (stable-sort (copy-list *db*) order :key key))
      (search-params (or (get-parameter "search") '()))
-     (database (select :tags (create-query-sequence tags #\space) :database database))
+     (database (select :tags tags :database database))
      (database
        (search-bookmarks (create-query-sequence search-params #\space) database)))
-    (render-bookmarks database)))
+    (render-bookmarks database tags)))
 
 (defun trim (item)
   (string-trim '(#\space) (post-parameter item)))
@@ -165,7 +165,7 @@
                             (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")))))))
 
 
-(defun render-tags (tags)
+(defun render-tags (tags tags-list)
   (with-html-output
     (*standard-output* nil :indent t)
     (htm
@@ -176,15 +176,15 @@
                 :class "tags-list well"
                 (mapc #'(lambda (tag)
                             (htm
-                              (:a
-                                :class "btn btn-primary btn-xs" :role "button"
-                                :href (format nil "?tags=~a" (first tag)) (format t "~{ ~a ~}" tag)))) tags)))))))
+                              (:a :class "btn btn-primary btn-xs" :role "button"
+                                  :href (format nil "?tags=~{~a~^+~}" (reverse (cons (first tag) tags-list)))
+                                  (format t "~{ ~a ~}" tag)))) tags)))))))
 
-(defun render-bookmarks (database)
+(defun render-bookmarks (database tags-list)
   (standard-page
     (:title "Bookmarks")
     (:div :class "container"
-      (render-tags (number-of-occurrences 'tags database))
+      (render-tags (number-of-occurrences 'tags database) tags-list)
       (htm :br)
       (mapc #'(lambda (row)
                   (htm
