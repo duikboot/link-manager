@@ -209,26 +209,18 @@
       :class "container"
       (render-tags (number-of-occurrences 'tags database) tags-list)
       (htm :br)
-      (mapc
-        #'(lambda (row)
-            (htm
-              (:div :class "col-md-4 col column-div"
-                    (:a
-                      :target "_blank"
-                      :href
-                      (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
-                    (:a
-                      :class "glyphicon glyphicon-pencil"
-                      :href (format nil "/bookmarks/edit/~a" (id row)))
-                    (:a
-                      :class "glyphicon glyphicon-remove confirm-delete"
-                      :data-title (format nil "~a" (title row))
-                      :href (format nil "/bookmarks/delete/~a" (id row)))
-                    (:div (fmt (format-time "Date added: "(date-added row))))
-                    (:div (fmt (format-time "Date modified: " (date-modified row))))
-                    (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))))
+      (mapc #'(lambda (row)
+                (htm
+                  (:div :class "col-md-4 col column-div"
+                        (:a :target "_blank" :href
+                            (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
+                        (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
+                        (:a :class "glyphicon glyphicon-remove confirm-delete" :data-title (format nil "~a" (title row)) :href (format nil "/bookmarks/delete/~a" (id row)))
+                        (:div (fmt (format-time "Date added: "(date-added row))))
+                        (:div (fmt (format-time "Date modified: " (date-modified row))))
+                        (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))))
             ; (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
-            database)))))
+            database))))
 
 (defun last-element (lst)
   "Return last element in list."
