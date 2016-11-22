@@ -16,9 +16,6 @@
 (defparameter *counter* "counter")
 (defparameter *web-port* 9999)
 
-(defparameter *haystacks* '(title summary tags)
-  "These are the items you can search in")
-
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
 
@@ -98,11 +95,11 @@
 (defun save-db (filename)
   "Save current *db* to file."
   (with-open-file (out filename
-                  :direction :output
-                  :if-exists :supersede)
+                       :direction :output
+                       :if-exists :supersede)
     (with-standard-io-syntax
-        (print *highest-id* out)
-        (print *db* out))))
+      (print *highest-id* out)
+      (print *db* out))))
 
 (defun save ()
   (save-db *database*))

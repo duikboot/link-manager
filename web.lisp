@@ -8,18 +8,17 @@
             (make-instance 'hunchentoot:easy-acceptor :port *web-port*)))))
 
 (defun stop-server ()
-  (if (not *web-acceptor*)
-    (format t "~%Webserver not running~%")
-    (progn
-      (hunchentoot:stop *web-acceptor*)
-      (setf *web-acceptor* nil))))
+ (if (not *web-acceptor*)
+  (format t "~%Webserver not running~%")
+  (progn
+    (hunchentoot:stop *web-acceptor*)
+    (setf *web-acceptor* nil))))
 
 (defun get-order (x)
   (if (equalp "desc" x) #'> #'<))
 
 ; (defun truncate-string (str len)
 ;   (if (> (length str) len) (subseq str 0 len) str))
-
 
 (defun truncate-string (str len)
   (cond
@@ -68,12 +67,12 @@
  ;; footer content
 (defun footer ()
   (with-html-output (*standard-output* nil :indent t)
-  (:footer :class "footer-distributed"
-    (:div :class "footer-right"
-      (:a :href "https://twitter.com/u_boot" (:i :class "fa fa-twitter")))
-    (:div :class "footer-left"
-    (:a :href "/index" (:img  :class "logo" :src "/images/logo.png" ))
-    (:p :style "color: black;" "Duikboot &copy; 2016")))))
+   (:footer :class "footer-distributed"
+     (:div :class "footer-right"
+       (:a :href "https://twitter.com/u_boot" (:i :class "fa fa-twitter")))
+     (:div :class "footer-left"
+      (:a :href "/index" (:img  :class "logo" :src "/images/logo.png"))
+      (:p :style "color: black;" "Duikboot &copy; 2016")))))
 
 (defun index ()
   (redirect "/bookmarks/"))
@@ -177,7 +176,8 @@
                 (mapc #'(lambda (tag)
                             (htm
                               (:a :class "btn btn-primary btn-xs" :role "button"
-                                  :href (format nil "?tags=~{~a~^+~}" (reverse (cons (first tag) tags-list)))
+                                  :href (format nil "?tags=~{~a~^+~}"
+                                                (reverse (cons (first tag) tags-list)))
                                   (format t "~{ ~a ~}" tag)))) tags)))))))
 
 (defun render-bookmarks (database tags-list)
@@ -195,10 +195,10 @@
                       (:a :class "glyphicon glyphicon-remove confirm-delete" :data-title (format nil "~a" (title row)) :href (format nil "/bookmarks/delete/~a" (id row)))
                       (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row))))
-                      (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row)))
+                      (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))))
                       ; (:div :class "block-with-text" (fmt "Summary: ~{ ~(~a~) ~}" (summary row)))
-                      )
-                      )) database))))
+                      
+              database))))
 
 (defun last-element (lst)
   "Return last element in list."

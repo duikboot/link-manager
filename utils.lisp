@@ -1,5 +1,8 @@
 (in-package :link-manager)
 
+(defparameter *haystacks* '(title summary tags)
+ "These are the items you can search in")
+
 (defvar *log* *error-output*)
 
 (defun l (&rest args)
