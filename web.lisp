@@ -49,12 +49,6 @@
         (footer)))))
 
 (defun header ()
-  (multiple-value-bind (user password)
-    (authorization)
-    (cond ((and (equal user "nanook")
-                (equal password "igloo")
-                (hunchentoot:header-in* :authorization)))
-          (t (require-authorization))))
   (with-html-output (*standard-output* nil :indent t)
     (:nav :class "navbar navbar-inverse navbar-fixed-top"
       (:div :class "container-fluid"
@@ -132,40 +126,40 @@
 
 (defun bookmark-form (&key id title link summary tags (error nil))
   (standard-page
-    (:title "Add bookmark")
-    (:div :style "margin: 0 auto; width: 90%"
-          (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
-                 (:input :type "hidden" :value (if id id 0) :name "id")
-                 (when error
-                   (show-error))
-                 (:div :class "form-group"
-                       (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
-                       (:div :class "col-sm-10"
-                             (:input :type "text" :id "bf_title" :placeholder "Bookmark title"
-                                     :tabindex "1" :class "form-control" :value
-                                     (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title")))
-                 (:div :class "form-group"
-                       (:label :for "bf_link" :class "col-sm-2 control-label" "Link")
-                       (:div :class "col-sm-10"
-                             (:input :type "url" :id "bf_link" :placeholder "https://www.site.com"
-                                     :tabindex "2" :class "form-control" :value
-                                     (if link link nil) :name "link")))
-                 (:div :class "form-group"
-                       (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
-                       (:div :class "col-sm-10"
-                             (format t "<textarea name=\"summary\" placeholder=\"Descriptive summary of site contents\" tabindex=\"3\" class=\"form-control\" rows=\"10\" cols=\"70\">")
-                             (when summary (format t "~{~(~a~^ ~)~}" summary))
-                             (format t "</textarea>")))
-                 (:div :class "form-group"
-                       (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
-                       (:div :class "col-sm-10"
-                             (:input :type "text" :id "bf_tags" :placeholder "space separated words"
-                                     :tabindex "4" :class "form-control" :value
-                                     (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
-                 (:div :class "form-group"
-                       (:div :class "col-sm-offset-2 col-sm-10"
-                             (:button :type "submit" :tabindex "5" :class "btn btn-primary" "Save")
-                             (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")))))))
+   (:title "Add bookmark")
+   (:div :style "margin: 0 auto; width: 90%"
+         (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
+                (:input :type "hidden" :value (if id id 0) :name "id")
+                (when error
+                  (show-error))
+                (:div :class "form-group"
+                      (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
+                      (:div :class "col-sm-10"
+                            (:input :type "text" :id "bf_title" :placeholder "Bookmark title"
+                                    :tabindex "1" :class "form-control" :value
+                                    (if title (format nil "~{~(~a~^ ~)~}" title) nil) :name "title")))
+                (:div :class "form-group"
+                      (:label :for "bf_link" :class "col-sm-2 control-label" "Link")
+                      (:div :class "col-sm-10"
+                            (:input :type "url" :id "bf_link" :placeholder "https://www.site.com"
+                                    :tabindex "2" :class "form-control" :value
+                                    (if link link nil) :name "link")))
+                (:div :class "form-group"
+                      (:label :for "bf_sum" :class "col-sm-2 control-label" "Summary")
+                      (:div :class "col-sm-10"
+                            (format t "<textarea name=\"summary\" placeholder=\"Descriptive summary of site contents\" tabindex=\"3\" class=\"form-control\" rows=\"10\" cols=\"70\">")
+                            (when summary (format t "~{~(~a~^ ~)~}" summary))
+                            (format t "</textarea>")))
+                (:div :class "form-group"
+                      (:label :for "bf_tags" :class "col-sm-2 control-label" "Tags")
+                      (:div :class "col-sm-10"
+                            (:input :type "text" :id "bf_tags" :placeholder "space separated words"
+                                    :tabindex "4" :class "form-control" :value
+                                    (if tags (format nil "~{~(~a~^ ~)~}" tags) nil) :name "tags" :size 80)))
+                (:div :class "form-group"
+                      (:div :class "col-sm-offset-2 col-sm-10"
+                            (:button :type "submit" :tabindex "5" :class "btn btn-primary" "Save")
+                            (:a :tabindex "6" :href "/bookmarks/" :class "btn" "Cancel")))))))
 
 
 (defun render-tags (tags tags-list)
@@ -194,7 +188,7 @@
                   (htm
                     (:div :class "col-md-4 col column-div"
                       (:a :target "_blank" :href
-                          (format nil "~a" (link row)) (fmt "~{ ~(~a~) ~}" (title row)))
+                          (format nil "~a" (link row)) (fmt "~@(~{ ~(~a~)~}~)." (title row)))
                       (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)))
                       (:a :class "glyphicon glyphicon-remove confirm-delete" :data-title (format nil "~a" (title row)) :href (format nil "/bookmarks/delete/~a" (id row))) (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row)))) (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))))
@@ -216,6 +210,20 @@
   (save)
   (redirect "/"))
 
+
+
+; (defmethod handle-request :before ((acceptor acceptor) request)
+;   (multiple-value-bind (user password)
+;     (authorization)
+;     (cond ((and (equal user (first users))
+;                 (equal password "igloo")
+;                 (hunchentoot:header-in* :authorization)))
+;           (t (require-authorization)))))
+
+; (defmethod hunchentoot:handle-request :before ((acceptor hunchentoot:acceptor)
+;                                                (request hunchentoot:request))
+;   (hunchentoot:start-session))
+
 (defun edit-bookmark ()
   (let* ((bookmark-id (get-last-element-from-uri (request-uri*)))
          (bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))
@@ -224,7 +232,7 @@
          (link (link bookmark))
          (summary (summary bookmark))
          (tags (tags bookmark)))
-    (bookmark-form :id id :title title :link link :summary summary :tags tags)))
+   (bookmark-form :id id :title title :link link :summary summary :tags tags)))
 
 (defun get-bookmark ()
   (let ((bookmark-id (get-last-element-from-uri (request-uri*))))

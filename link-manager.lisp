@@ -8,6 +8,8 @@
 
 (in-package :link-manager)
 
+; (setf *catch-errors-p* '())
+(setf *show-lisp-backtraces-p* t)
 
 (defvar *db* nil)
 (defvar *web-acceptor* nil)
@@ -43,7 +45,10 @@
 (defun make-link (title link summary tags &optional read?)
   "Create structure for link"
   (add-record
-    (make-bookmark :title title :link link :summary summary :tags tags
+    (make-bookmark :title title
+                   :link link
+                   :summary summary
+                   :tags tags
                    :read? read?)))
 
 (defun single (lst)

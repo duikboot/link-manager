@@ -25,16 +25,18 @@
 (push (create-static-file-dispatcher-and-handler "/fonts/glyphicons-halflings-regular.woff2" "bootstrap/fonts/glyphicons-halflings-regular.woff2") *dispatch-table*)
 
 ;;font awesome fonts
-(push (create-static-file-dispatcher-and-handler "/font-awesome.css"
-                                                 "font-awesome-4.6.3/css/font-awesome.css") *dispatch-table*)
+(push (create-static-file-dispatcher-and-handler
+        "/font-awesome.css"
+        "font-awesome-4.6.3/css/font-awesome.css")
+      *dispatch-table*)
 (push (create-static-file-dispatcher-and-handler
         "/fonts/fontawesome-webfont.woff2"
-        "font-awesome-4.6.3/fonts/fontawesome-webfont.woff2") 
-      *dispatch-table*) 
+        "font-awesome-4.6.3/fonts/fontawesome-webfont.woff2")
+      *dispatch-table*)
 (push (create-static-file-dispatcher-and-handler
         "/fonts/fontawesome-webfont.woff "
         "font-awesome-4.6.3/fonts/fontawesome-webfont.woff")
-      *dispatch-table*) 
+      *dispatch-table*)
 (push (create-static-file-dispatcher-and-handler
         "/fonts/fontawesome-webfont.ttf"
         "font-awesome-4.6.3/fonts/fontawesome-webfont.ttf")
