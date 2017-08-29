@@ -1,9 +1,8 @@
-;;;; link-manager.lisp
-
 ;;;; TODO; figure out order to execute
 ;;;; for now:
 ;;;; - lisp --load package.lisp
 ;;;; - (load "link-manager.lisp")
+;;;; - (ql:quickload :link-manager)
 ;;;; - (in-package :link-manager)
 
 (in-package :link-manager)
@@ -50,6 +49,7 @@
                    :summary summary
                    :tags tags
                    :read? read?)))
+
 
 (defun single (lst)
   "Return true if lst has only one element in it."

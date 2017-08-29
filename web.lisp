@@ -89,7 +89,7 @@
     (render-bookmarks database tags)))
 
 (defun trim (item)
-  (string-trim '(#\space) (post-parameter item)))
+  (string-trim '(#\space) (escape-string (post-parameter item))))
 
 (defmacro create-query-sequence-from-post (item)
   `(create-query-sequence (trim ,item)))
@@ -98,7 +98,7 @@
   (let
     ((id (parse-integer (post-parameter "id")))
      (title (create-query-sequence-from-post "title"))
-     (link (trim "link"))
+     (link (escape-string (trim "link")))
      (summary (create-query-sequence-from-post "summary"))
      (tags (create-query-sequence-from-post "tags")))
     (if (not (and title link tags))
@@ -224,15 +224,15 @@
 ;                                                (request hunchentoot:request))
 ;   (hunchentoot:start-session))
 
+
 (defun edit-bookmark ()
   (let* ((bookmark-id (get-last-element-from-uri (request-uri*)))
-         (bookmark (first (select :fn (where 'id (parse-integer bookmark-id)))))
-         (id (id bookmark))
-         (title (title bookmark))
-         (link (link bookmark))
-         (summary (summary bookmark))
-         (tags (tags bookmark)))
-   (bookmark-form :id id :title title :link link :summary summary :tags tags)))
+         (bookmark (first (select :fn (where 'id (parse-integer bookmark-id))))))
+   (bookmark-form :id (id bookmark)
+                  :title (title bookmark)
+                  :link (link bookmark)
+                  :summary (summary bookmark)
+                  :tags (tags bookmark))))
 
 (defun get-bookmark ()
   (let ((bookmark-id (get-last-element-from-uri (request-uri*))))
