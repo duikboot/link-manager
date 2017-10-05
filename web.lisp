@@ -53,7 +53,7 @@
     (:nav :class "navbar navbar-inverse navbar-fixed-top"
       (:div :class "container-fluid"
         (:div :class "navbar-header"
-          (:a :class "navbar-brand" :href "/bookmarks"
+          (:a :class "navbar-brand" :href "/bookmarks/"
             (:i :class "glyphicon glyphicon-home"))
           (:ul :class "nav navbar-nav"
             (:li
