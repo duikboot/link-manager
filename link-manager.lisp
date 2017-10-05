@@ -17,6 +17,14 @@
 (defparameter *counter* "counter")
 (defparameter *web-port* 9999)
 
+
+(defparameter *vlime-instance* nil)
+
+(defun start-vlime ()
+ (unless *vlime-instance*
+  (vlime:main :port 4005 :backend :vlime-usocket)
+  (setf *vlime-instance* "Vlime running")))
+
 ; set default counter to a function, then call in on creation of id
 (defvar *highest-id* 0)
 
