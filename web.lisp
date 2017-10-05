@@ -208,7 +208,7 @@
           (get-last-element-from-uri (request-uri*))))
     (delete-link (parse-integer bookmark-id)))
   (save)
-  (redirect "/"))
+  (redirect "/bookmarks/"))
 
 
 
