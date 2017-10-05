@@ -22,7 +22,7 @@
 
 (defun start-vlime ()
  (unless *vlime-instance*
-  (vlime:main :port 4005 :backend :vlime-usocket)
+  (vlime:main :port 4006 :backend :vlime-usocket)
   (setf *vlime-instance* "Vlime running")))
 
 ; set default counter to a function, then call in on creation of id
@@ -32,6 +32,17 @@
   #'(lambda () (incf *highest-id*)))
 
 (defvar get-id (next-value))
+
+(defparameter *user* nil)
+(defparameter *pass* nil)
+
+(defun get-user ()
+  (with-open-file (in "passwd" :if-does-not-exist nil)
+    (when in
+      (with-standard-io-syntax
+        (let ((f (read in)))
+         (setf *pass* (second f))
+         (setf *user* (first f)))))))
 
 (defstruct (bookmark :conc-name)
   "Bookmark structure"
