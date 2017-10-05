@@ -1,5 +1,7 @@
 ;;;; link-manager.asd
 ;;;; (ql:quickload :link-manager)
+;;;; (ql:quickload :qlot)
+;;;; (qlot:quickload :link-manager)
 ;;;; use cl-who hunchentoot etc.
 
 (asdf:defsystem #:link-manager

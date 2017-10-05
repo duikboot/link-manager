@@ -34,12 +34,12 @@
        (:meta :http-equiv "X-UA-Compatible" :content "IE=edge")
        (:meta :name "viewport" :content "width=device-width, initial-scale=1")
        (:title ,title)
-       (:link :href "/style.css" :rel "stylesheet" :type "text/css")
-       (:link :href "/bootstrap.css" :rel "stylesheet" :type "text/css")
-       (:link :href "/font-awesome.css" :rel "stylesheet" :type "text/css")
-       (:script :src "/jquery.js")
-       (:script :src "/bootstrap-js.js")
-       (:script :src "/confirmdelete.js"))
+       (:link :href "/css/style.css" :rel "stylesheet" :type "text/css")
+       (:link :href "/bootstrap/css/bootstrap.css" :rel "stylesheet" :type "text/css")
+       (:link :href "/font-awesome-4.6.3/css/font-awesome.css" :rel "stylesheet" :type "text/css")
+       (:script :src "/bootstrap/js/jquery-2.2.4-min.js")
+       (:script :src "/bootstrap/js/bootstrap.js")
+       (:script :src "/js/confirmdelete.js"))
       (:body
         (header)
         (:div :style "min-height:450px"
