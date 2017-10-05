@@ -9,7 +9,7 @@
   :author "Arjen Dijkstra <dijkstra.arjen@gmail.com>"
   :license "MIT"
   :serial t
-  :depends-on (:hunchentoot :cl-who :split-sequence)
+  :depends-on (:hunchentoot :cl-who :split-sequence :vlime :vlime-usocket)
   :serial t
   :components ((:file "package")
                (:file "macros")
