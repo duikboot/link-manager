@@ -212,13 +212,13 @@
 
 
 
-; (defmethod handle-request :before ((acceptor acceptor) request)
-;   (multiple-value-bind (user password)
-;     (authorization)
-;     (cond ((and (equal user (first users))
-;                 (equal password "igloo")
-;                 (hunchentoot:header-in* :authorization)))
-;           (t (require-authorization)))))
+(defmethod handle-request :before ((acceptor hunchentoot:acceptor)
+                                   (request hunchentoot:request))
+  (multiple-value-bind (user password)(hunchentoot:authorization)
+    (cond ((and (equal user *user*)
+                (equal password *pass*)
+            (hunchentoot:header-in* :authorization)(hunchentoot:start-session)))
+          (t (hunchentoot:require-authorization)))))
 
 ; (defmethod hunchentoot:handle-request :before ((acceptor hunchentoot:acceptor)
 ;                                                (request hunchentoot:request))
