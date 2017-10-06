@@ -4,3 +4,4 @@ tags
 .idea
 test.db
 passwd$
+.fasl
