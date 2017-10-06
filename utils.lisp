@@ -42,7 +42,7 @@
   (let ((elements (mapcar #'(lambda (x) (list x 0)) (show-all-unique-elements fn database)))
         (items (flatten (mapcar fn database))))
     (mapcar #'(lambda(x) (incf (second (assoc x elements))) ) items)
-    (sort elements  #'> :key #'second)))
+    (stable-sort (sort elements #'string< :key #'(lambda (x) (string (first x))))  #'> :key #'second)))
 
 (defun item-in-record-p (item record)
     (remove nil (mapcar #'(lambda (x) (find item (funcall x record))) *haystacks*)))
