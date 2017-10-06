@@ -70,8 +70,8 @@
      (:div :class "footer-right"
        (:a :href "https://twitter.com/u_boot" (:i :class "fa fa-twitter")))
      (:div :class "footer-left"
-      (:a :href "/index" (:img  :class "logo" :src "/images/logo.png"))
-      (:p :style "color: black;" "Duikboot &copy; 2016")))))
+      (:a :href "/index" (:img :src "/images/logo.png"))
+      (:p :style "color: black;" "Duikboot &copy; 2017")))))
 
 (defun index ()
   (redirect "/bookmarks/"))
