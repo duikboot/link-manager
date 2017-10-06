@@ -214,7 +214,6 @@
 
 (defmethod handle-request :before ((acceptor hunchentoot:acceptor)
                                    (request hunchentoot:request))
-  ; (get-user)
   (multiple-value-bind (user password)(hunchentoot:authorization)
     (cond ((and (equal user *user*)
                 (equal password *pass*)

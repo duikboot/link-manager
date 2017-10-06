@@ -44,6 +44,8 @@
          (setf *pass* (second f))
          (setf *user* (first f)))))))
 
+(get-user)
+
 (defstruct (bookmark :conc-name)
   "Bookmark structure"
   ; set default function next-value then call it on creation
