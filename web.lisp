@@ -187,8 +187,8 @@
       (mapc #'(lambda (row)
                   (htm
                     (:div :class "col-md-4 col column-div"
-                      (:a :target "_blank" :title (summary row) :href
-                          (format nil "~a" (link row)) (fmt "~@(~{ ~(~a~)~}~)" (title row)))
+                      (:a :target "_blank" :title (format nil "~@(~{~(~a~) ~}~)" (summary row)) :href
+                          (format nil "~a" (link row)) (fmt "~@(~{~(~a~) ~}~)" (title row)))
                       (:a :class "glyphicon glyphicon-pencil" :href (format nil "/bookmarks/edit/~a" (id row)) :title "Edit")
                       (:a :class "glyphicon glyphicon-remove confirm-delete" :data-title (format nil "~a" (title row)) :href (format nil "/bookmarks/delete/~a" (id row))  :title "Delete") (:div (fmt (format-time "Date added: "(date-added row))))
                       (:div (fmt (format-time "Date modified: " (date-modified row)))) (:div (fmt "Tags: <b><em>~{ ~(~a~) ~}</em></b>" (tags row))))))
