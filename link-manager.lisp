@@ -8,7 +8,7 @@
 (in-package :link-manager)
 
 ; (setf *catch-errors-p* '())
-(setf *show-lisp-backtraces-p* t)
+(setf *show-lisp-backtraces-p* nil)
 
 (defvar *db* nil)
 (defvar *web-acceptor* nil)

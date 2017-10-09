@@ -108,7 +108,7 @@
                 :summary summary :tags tags)
         (make-link title link summary tags)))
     (save)
-    (redirect "/bookmarks/add")))
+    (bookmark-form :success t)))
 
 (defun show-error ()
   (with-html-output
@@ -124,14 +124,14 @@
       (:div
         :class "alert alert-success fade in" "Bookmark successfully added."))))
 
-(defun bookmark-form (&key id title link summary tags (error nil))
+(defun bookmark-form (&key id title link summary tags (error-p nil)(success-p nil))
   (standard-page
    (:title "Add bookmark")
    (:div :style "margin: 0 auto; width: 90%"
          (:form :method "post" :class "form-horizontal" :action "/bookmarks/save"
                 (:input :type "hidden" :value (if id id 0) :name "id")
-                (when error
-                  (show-error))
+                (when error-p (show-error))
+                (when success-p (show-success))
                 (:div :class "form-group"
                       (:label :for "bf_title" :class "col-sm-2 control-label" "Title")
                       (:div :class "col-sm-10"
