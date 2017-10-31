@@ -108,7 +108,7 @@
                 :summary summary :tags tags)
         (make-link title link summary tags)))
     (save)
-    (bookmark-form :success t)))
+    (bookmark-form :success-p t)))
 
 (defun show-error ()
   (with-html-output
