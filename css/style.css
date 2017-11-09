@@ -298,11 +298,10 @@ color: #C1BDBD;
   box-sizing: border-box;
   width: 100%;
   text-align: left;
-  /* position: fixed; */
+  position: fixed;
   bottom: 0;
   font: normal 16px sans-serif;
-
-  padding: 45px 50px;
+  padding: 5px 20px;
 
 }
 
@@ -313,7 +312,6 @@ color: #C1BDBD;
 }
 
 /* Footer links */
-
 .footer-distributed p.footer-links{
   font-size:18px;
   font-weight: bold;
