@@ -176,7 +176,7 @@
                               (:a :class "btn btn-primary btn-xs" :role "button"
                                   :href (format nil "?tags=~{~a~^+~}"
                                                 (reverse (cons (first tag) tags-list)))
-                                  (format t "~{ ~a ~}" tag)))) tags)))))))
+                                  (format t "~{ ~(~a~) ~}" tag)))) tags)))))))
 
 (defun render-bookmarks (database tags-list)
   (standard-page

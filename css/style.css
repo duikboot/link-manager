@@ -288,6 +288,9 @@ color: #C1BDBD;
   color:red;
 }
 
+.tags-list a.btn-xs{
+  text-transform: capitalize;
+}
 
 
 
