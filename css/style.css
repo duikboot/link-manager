@@ -302,11 +302,22 @@ color: #C1BDBD;
   bottom: 0;
   font: normal 16px sans-serif;
   padding: 5px 20px;
+}
 
+.footer-distributed .footer-left a img{
+  max-width: 60px;
+}
+
+.footer-distributed .footer-left a {
+  display: inline-block;
+  float: left;
 }
 
 .footer-distributed .footer-left p{
-  color:  #8f9296;
+  color: black;
+  display: inline-block;
+  float: left;
+  padding: 25px 0 0 10px;
   font-size: 14px;
   margin: 0;
 }
@@ -329,7 +340,7 @@ color: #C1BDBD;
 
 .footer-distributed .footer-right{
   float: right;
-  margin-top: 6px;
+  margin-top: 14px;
   max-width: 180px;
 }
 
