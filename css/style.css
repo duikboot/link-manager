@@ -291,6 +291,7 @@ color: #C1BDBD;
 
 
 
+
 /* ==================== footer start =======================*/
 .footer-distributed{
   background-color: #8099B7;
@@ -358,6 +359,7 @@ color: #C1BDBD;
 
   margin-left: 3px;
 }
+
 /* footer media queries*/
 @media (max-width: 600px) {
 
@@ -374,6 +376,12 @@ color: #C1BDBD;
   .footer-distributed .footer-left p.footer-links{
     line-height: 1.8;
   }
+}
+
+
+/* We don't want content to get hidden behind the footerbar */
+body {
+  padding-bottom: 70px !important;
 }
 
 /* ====================== footer end =======================*/
